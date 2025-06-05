@@ -1,0 +1,197 @@
+{% extends 'user/layout_user.html' %}
+{% block content %}
+<div class="content" id="mainContent">
+    <section class="container my-5" id="home">
+        {% if get_flashed_messages() %}
+        <div id="flashMessage" class="mt-3 mr-2 alert alert-success alert-dismissible bg-success text-white border-0 fade show"
+            role="alert" style="position: fixed; top: 0; right: 0; z-index: 9999;">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ get_flashed_messages()[0] }}
+        </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-md-6 mb-3 text-center">
+                <img src="../static/icon/upload_gambar.svg" alt="icon_upload_gambar" class="img-responsive img">
+                <p class="font-semibold mt-1">Upload gambar mata anak</p>
+                <input id="FormGambar" name="file" type="file" accept="image/*" class="btn btn-custom custom-bg-warning w-100 text-white font-semibold" />
+            </div>
+            <div class="col-md-6 mb-3 text-center">
+                <img src="../static/icon/hasil_diagnosa.svg" alt="icon_cek_hasil" class="img-responsive img">
+                <p class="font-semibold mt-1">Hasil Diagnosa</p>
+                <button id="cek_hasil" class="btn btn-custom custom-bg-warning w-100 text-white font-semibold">Lihat Hasil</button>
+            </div>
+            <div class="col-md-12 mb-3 text-center">
+                <img src="../static/icon/upload_kamera.svg" alt="icon_upload_camera" class="img-responsive img">
+                <p class="font-semibold mt-1">Foto mata anak</p>
+                <button data-toggle="modal" data-target="#cameraModal" id="open_camera" class="btn btn-custom custom-bg-warning w-100 text-white font-semibold">Buka Kamera</button>
+            </div>
+        </div>
+        <div class="modal fade" id="cameraModal" tabindex="-1" aria-labelledby="cameraModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="cameraModalLabel">Capture Photo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <video id="video" width="100%" height="240" autoplay></video>
+                        <button id="snap" class="btn btn-success mt-2">Capture Photo</button>
+                        <canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="upload" class="btn btn-primary">Upload Photo</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div class="modal fade" id="dataAnakModal" tabindex="-1" role="dialog" aria-labelledby="dataAnakModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="dataAnakModalLabel">Pilih Data Anak</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <table id="dataAnakTable" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Anak</th>
+                            <th>Usia Anak</th>
+                            <th>Jenis Kelamin</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for anak in data %}
+                        <tr>
+                            <td>{{ anak.id }}</td>
+                            <td>{{ anak.nama_anak }}</td>
+                            <td>{{ anak.usia_anak }}</td>
+                            <td>{{ anak.jenis_kelamin }}</td>
+                            <td>
+                                <button class="btn btn-success pilih-anak" data-id="{{ anak.id }}">Pilih</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function () {
+        const $content = $('.content');
+        const $sidebar = $('.sidebar');
+        const $mainContent = $('#mainContent');
+        const $FormGambar = $('#FormGambar');
+        const $dataAnakTable = $('#dataAnakTable');
+        const video = $('#video')[0];
+        const canvas = $('#canvas')[0];
+        const context = canvas.getContext('2d');
+        let selectedImageBlob = null;
+
+        function adjustContentStyle() {
+            $content.toggleClass('width-desktop', $(window).width() >= 500).toggleClass('width-mobile', $(window).width() < 500);
+        }
+
+        function stopCameraStream() {
+            const stream = video.srcObject;
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+            }
+        }
+
+        function openDataAnakModal(blob) {
+            selectedImageBlob = blob;
+            $('#dataAnakModal').modal('show');
+        }
+
+        adjustContentStyle();
+        $(window).resize(adjustContentStyle);
+
+        $('#sidebarToggle').click(function () {
+            $sidebar.toggleClass('collapsed');
+            $mainContent.toggleClass('collapsed');
+            adjustContentStyle();
+        });
+
+        $dataAnakTable.DataTable();
+
+        $('#cameraModal').on('shown.bs.modal', function () {
+            navigator.mediaDevices.getUserMedia({ video: true }).then(function (stream) {
+                video.srcObject = stream;
+                video.play();
+            }).catch(function (err) {
+                console.error("Failed to access the camera:", err);
+                alert("Could not access the camera. Please try using a different browser or check if the camera is in use.");
+            });
+        }).on('hidden.bs.modal', stopCameraStream);
+
+        $('#snap').click(function () {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            $('#canvas').show();
+        });
+
+        $('#upload').click(function () {
+            $(this).text("Loading...").prop("disabled", true);
+            canvas.toBlob(blob => openDataAnakModal(blob), 'image/png');
+        });
+
+        $('#cek_hasil').click(function () {
+            if ($FormGambar[0].files.length === 0) {
+                alert('Please upload a file or take a photo first.');
+                return;
+            }
+            openDataAnakModal($FormGambar[0].files[0]);
+        });
+
+        $dataAnakTable.on('click', '.pilih-anak', function () {
+            const $button = $(this);
+            $button.text('Loading...').prop("disabled", true);
+
+            if (selectedImageBlob) {
+                const formData = new FormData();
+                formData.append('gambar', selectedImageBlob, 'photo.png');
+                formData.append('id_anak', $button.data('id'));
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/predict',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        alert("Status: " + (data.msg === "SUKSES" ? "Sukses" : data.msg));
+                        window.location.href = data.msg === "SUKSES" ? `/user/hasil_diagnosa/${data.id_hasil}` : "/user/dashboard";
+                    },
+                    error: function (xhr) {
+                        const errorMsg = xhr.responseJSON?.msg || "Terjadi kesalahan pada Server";
+                        alert(errorMsg);
+                        window.location.href = "/user/dashboard";
+                    }
+                });
+            } else {
+                alert('No image selected.');
+            }
+        });
+
+        $('#dataAnakModal').on('hidden.bs.modal', function () {
+            location.reload();
+        });
+
+        setTimeout(function () {
+            $('#flashMessage').fadeOut('fast');
+        }, 1000);
+    });
+</script>
+{% endblock %}

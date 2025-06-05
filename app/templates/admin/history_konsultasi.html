@@ -1,0 +1,540 @@
+{% if session['role']=='admin' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EyeKids</title>
+  <!-- Link to Google Fonts Raleway -->
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+  
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Link to DataTables CSS -->
+<!--
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.flash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script> -->
+
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.4/css/dataTables.dataTables.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.1.1/css/buttons.dataTables.css">
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.1.4/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.1.1/js/dataTables.buttons.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.1.1/js/buttons.dataTables.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.1.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.1.1/js/buttons.print.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      min-height: 100vh;
+      font-family: 'Raleway', sans-serif;
+      font-weight: 600;
+    }
+    .navbar {
+      height: 10vh;
+      position: fixed;
+      top: 0;
+      z-index: 2;
+      left: 0;
+      width: 100%;
+      background-color: #f8f9fa;
+    }
+    .sidebar {
+      height: 100vh;
+      position: fixed;
+      top: 65px;
+      left: 0;
+      width: 250px; 
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background-color: #f8f9fa;
+      border-right: 2px solid #ddd; 
+      transition: transform 0.3s ease;
+      padding: 20px;
+    }
+    .sidebar .content {
+      flex-grow: 1;
+    }
+    .sidebar.collapsed {
+      transform: translateX(-100%);
+    }
+    .sidebar .nav-link {
+      color: #000;
+    }
+    .sidebar .nav-link:hover {
+      background-color: #e9ecef;
+    }  
+    .sidebar .social-icons {
+      height: 100px;
+      margin-top: auto;
+      text-align: center;
+    }
+    .content {
+      margin-left: 250px;
+      padding: 20px;
+      transition: margin-left 0.3s ease;
+    }
+    .width-mobile {
+      width: 100%;
+    }
+    .width-desktop {
+      width: calc(100% - 250px);
+    }
+    .content.collapsed {
+      margin-left: 0;
+      width: 100%;
+    }
+    .btn-custom {
+      border-radius: 60px;
+    }
+    .custom-bg-info {
+      background-color: #1F4590;
+    }
+    .custom-text-info {
+      color: #1F4590;
+    }
+    .custom-bg-warning {
+      background-color: #FFA451;
+    }
+    .custom-text-warning {
+      color: #FFA451;
+    }
+    .font-bold {
+      font-weight: 700;
+    }
+    .font-semibold {
+      font-weight: 600;
+    }
+    .font-regular {
+      font-weight: 400;
+    }
+    .toggle-btn {
+      cursor: pointer;
+    }
+    .baseline {
+      align-items: baseline;
+    }
+    .custom-border-size {
+      height: 4px;
+      border: none;
+      background-color: #1F4590;
+    }
+    .nav-link {
+      color: #ffa451 !important;
+    }
+    .table-responsive {
+      margin-top: 20px;
+    }
+    .table thead th {
+      background-color: #ffa451;
+      color: white;
+      text-align: center;
+    }
+    .table tbody td {
+      text-align: center;
+    }
+    .buttons-csv{
+    background-color: #1d7532!important;
+    color: white!important;
+    border-radius: 5px!important;
+    padding: 5px 10px!important;
+    height:40px!important;
+    }
+    .buttons-excel{
+    background-color: #1d7532!important;
+    color: white!important;
+    border-radius: 5px!important;
+    padding: 5px 10px!important;
+    height:40px!important;
+
+    }
+    .buttons-pdf{
+    background-color: #1d7532!important;
+    color: white!important;
+    border-radius: 5px!important;
+    padding: 5px 10px!important;
+    height:40px!important;
+
+
+    }
+    .buttons-print{
+    background-color: #1d7532!important;
+    color: white!important;
+    border-radius: 5px!important;
+    padding: 5px 10px!important;
+    height:40px!important;
+
+
+    }
+
+    .btn-success {
+    background-color: #1d7532!important;
+    color: white!important;
+    border-radius: 5px!important;
+    padding: 5px 10px!important;
+    height:40px!important;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+.btn i {
+    margin-right: 5px;
+}
+
+  </style>
+</head>
+<body>
+  <!-- Topbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="d-flex baseline">
+      <a class="navbar-brand d-flex baseline" href="/admin/dashboard">
+        <h3 class="custom-text-info font-semibold">Eye</h3><p class="custom-text-warning font-semibold">kids</p>
+      </a>
+      <!-- Toggle Button -->
+      <div class="toggle-btn">
+        <button id="sidebarToggle" class="btn btn-secondary">☰</button>
+      </div>
+    </div>
+  </nav>
+  <!-- Sidebar -->
+  <nav class="sidebar bg-light p-2">
+    <div class="text-center">
+      <img src="../static/icon/icon_profile_admin.svg" alt="icon_profile_admin">
+      <p class="font-semibold custom-text-warning">{{session['full_name']}}</p>
+      <hr class="custom-bg-info custom-border-size btn-custom">
+    </div>
+    <ul class="nav flex-column text-start pl-3">
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/dashboard"><img src="../static/icon/jadwal.svg" height="25" width="25" alt="icon_dashboard"> Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/history_konsultasi"><img src="../static/icon/history_konsultasi.svg" height="25" width="25" alt="icon_history_konsultasi"> History Konsultasi</a>
+      </li>
+    </ul>
+    <div>
+      <hr class="custom-bg-info custom-border-size btn-custom">
+    </div>
+    <ul class="nav flex-column text-start pl-3">
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/penyakit_terbanyak"><img src="../static/icon/icon_bar_chart.svg" height="25" width="25" alt="icon_bar_chart"> Penyakit Terbanyak</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/keluar"><img src="../static/icon/logout.svg" height="25" width="25" alt="icon_keluar"> Keluar</a>
+      </li>
+    </ul>
+    <div>
+      <hr class="custom-bg-info custom-border-size btn-custom">
+    </div>
+    <div class="text-center social-icons">
+      <a href="" class="mr-3"><img src="../static/icon/twitter.svg" height="25" width="25" alt="twitter"></a> 
+      <a href="" class="mr-3"><img src="../static/icon/instagram.svg" height="25" width="25" alt="instagram"></a>
+      <a href=""><img src="../static/icon/whatsapp.svg" height="25" width="25" alt="whatsapp"></a>
+    </div>
+  </nav>
+  <!-- Content -->
+  <div class="content" id="mainContent">
+      <!-- Filter Section -->
+      
+
+    <!-- Hero Section -->
+    <section class="container my-5 mt-1" id="home">
+      <div class="row">
+        <div class="col-md-12 mb-3 text-center align-center">
+          <div class="text-center d-flex baseline">
+            <h1 class="font-bold custom-text-info mr-3">List Table History Konsultasi</h1>
+            <img src="../static/icon/table.svg" height="25" width="25" alt="icon_table">
+          </div>
+          <div class="mt-2 mb-4">
+            <form id="filterForm" method="GET">
+              <div class="form-row d-flex">
+                          <div class="col-lg-1">
+                              <a href="{{ url_for('history_konsultasi') }}" class="btn w-100 btn-secondary">Reset</a>
+                          </div>
+                          <div class="col-lg-2">
+                              <input type="text" class="w-100 form-control" id="filteranything" name="filteranything" placeholder="Search" value="{% if request.args.get('filteranything') %}{{ request.args.get('filteranything') }}{% endif %}">
+                          </div>
+                          <div class="col-lg-1">
+                              <button type="submit" class="btn w-100 btn-primary">Cari</button>
+                          </div>
+                  <div class="form-group col-2">
+                      <select name="filterYear" class="form-control w-100">
+                          <option value="">Pilih Tahun</option>
+                          {% for year in years %}
+                          {% if request.args.get('filterYear') == year %}
+                          <option value="{{ year }}" checked aria-checked="true" class="clicked" clicked>{{ year }}</option>
+                          {% else %}
+                          <option value="{{ year }}">{{ year }}</option>
+                          {% endif %}
+                          {% endfor %}
+                      </select>
+                  </div>
+                  <div class="col-lg-2">
+                      <select name="filterMonth" class="form-control w-100">
+                          <option value="">Pilih Bulan</option>
+                          {% for month in months %}
+                          {% if request.args.get('filterMonth') == month %}
+                          <option value="{{ month.value }}" checked aria-checked="true" class="clicked" clicked>{{ month.name }}</option>
+                          {% else %}
+                          <option value="{{ month.value }}">{{ month.name }}</option>
+                          {% endif %}
+                          {% endfor %}
+                      </select></div>
+                  <div class="form-group col-2">
+                      <input type="date" class="form-control w-100" id="filterCompleteDate" name="filterCompleteDate" value="{{ request.args.get('filterCompleteDate') }}">
+                  </div>
+                  <div class="form-group col-1">
+                      <button type="submit" class="btn btn-primary w-100">Filter</button>
+                  </div>
+              </div>
+          </form>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-bordered" id="data-table">
+              <thead>
+                <tr>
+                  <th>Nama</th>
+                  <th>Nama Anak</th>
+                  <th>Usia Anak</th>
+                  <th>Tanggal Konsultasi</th>
+                  <th>Hasil Diagnosa</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in histori_records %}
+                <tr>
+                  <td>{{ i.nama_user }}</td>
+                  <td>{{ i.nama_anak }}</td>
+                  <td>{{ i.usia_anak }}</td>
+                  <td>{{ i.tanggal_konsultasi  }}</td>
+                  <td>{{ i.hasil_diagnosa }}</td>
+                  <td>
+                    <button class="btn btn-custom-info mb-2 bg-info text-white" onclick="window.open('/admin/history_konsultasi/{{ i.id }}', '_blank');">Detail</button>
+                    <button class="btn btn-custom-warning mb-2 bg-warning text-white" onclick="showModal('edit', '{{ i.id }}','{{ i.nama_user }}', '{{ i.nama_anak }}', '{{ i.usia_anak }}', '{{ i.tanggal_konsultasi }}', '{{ i.hasil_diagnosa }}')"> Edit Data </button>
+                    <button class="btn btn-custom-danger mb-2 bg-danger text-white" onclick="showModal('delete', '{{ i.id }}')"> Hapus Data </button>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <!-- Modal -->
+<div class="modal fade" id="dataHistoryModal" tabindex="-1" role="dialog" aria-labelledby="dataHistoryModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="dataHistoryModalLabel">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <form id="dataHistoryForm">
+                  <input type="hidden" id="data_id">
+                  <div class="form-group">
+                    <label for="data_nama_anak">Nama Ortu</label>
+                    <input type="text" class="form-control" id="data_nama_ortu">
+                </div>
+                  <div class="form-group">
+                      <label for="data_nama_anak">Nama Anak</label>
+                      <input type="text" class="form-control" id="data_nama_anak">
+                  </div>
+                  <div class="form-group">
+                      <label for="data_usia_anak">Usia Anak</label>
+                      <input type="text" class="form-control" id="data_usia_anak">
+                  </div>
+                  <div class="form-group">
+                    <label for="tanggal_konsultasi">Tanggal Konsultasi</label>
+                    <input type="date" class="form-control" id="tanggal_konsultasi">
+                </div>
+                <div class="form-group">
+                  <label for="hasil_diagnosa">Hasil Diagnosa</label>
+                  <input type="text" class="form-control" id="hasil_diagnosa">
+              </div>
+              </form>
+              <div id="deleteConfirmation" style="display: none;">
+                <p>Anda yakin ingin menghapus data ini?</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" id="modalActionButton" class="btn btn-primary">Action</button>
+          </div>
+      </div>
+  </div>
+</div>
+  <!-- Load jQuery, Bootstrap, and DataTables JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- Inisialisasi DataTables -->
+  <script>
+  $(document).ready(function() {
+    $('#data-table').DataTable({ searching: false,
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: 'Export CSV',
+                exportOptions: {
+                    columns: ':not(:last-child)' // Mengekspor semua kolom kecuali kolom terakhir
+                }
+            },
+            {
+                extend: 'excelHtml5',
+                text: 'Export Excel',
+                exportOptions: {
+                    columns: ':not(:last-child)'
+                }
+            },
+            {
+                extend: 'pdfHtml5',
+                text: 'Export PDF',
+                exportOptions: {
+                    columns: ':not(:last-child)'
+                }
+            },
+            {
+                extend: 'print',
+                text: 'Print',
+                exportOptions: {
+                    columns: ':not(:last-child)'
+                }
+            }
+        ]
+
+  });
+    
+    var thisYear = new Date().getFullYear();
+    $("#filterYear").attr('max', thisYear);
+    var placeholder = "Tahun (2000 - " + thisYear + ")";
+    $("#filterYear").attr('placeholder', placeholder);
+  });
+
+    document.getElementById('sidebarToggle').addEventListener('click', function() {
+      document.querySelector('.sidebar').classList.toggle('collapsed');
+      document.getElementById('mainContent').classList.toggle('collapsed');
+    });
+    
+function showModal(action, id, nama_ortu, nama_anak, usia_anak, tanggal_konsultasi,hasil_diagnosa) {
+    const modalTitle = $('#dataHistoryModalLabel');
+    const modalActionButton = $('#modalActionButton');
+    const deleteConfirmation = $('#deleteConfirmation');
+
+    // Reset form
+    $('#dataHistoryForm')[0].reset();
+    $('#data_id').val('');
+    deleteConfirmation.hide();
+
+     if (action === 'edit') {
+        $("#dataHistoryForm").show();
+        modalTitle.text('Edit Data Anak');
+        modalActionButton.text('Simpan');
+        $('#data_id').val(id);
+        $('#data_nama_ortu').val(nama_ortu || '');
+        $('#data_nama_anak').val(nama_anak || '');
+        $('#data_usia_anak').val(usia_anak || '');
+        $('#tanggal_konsultasi').val(tanggal_konsultasi || '');
+        $('#hasil_diagnosa').val(hasil_diagnosa || '');
+        
+        modalActionButton.off('click').on('click', updateData);
+    } else if (action === 'delete') {
+        modalTitle.text('Hapus Data Anak');
+        modalActionButton.text('Hapus');
+        $('#data_id').val(id);
+        deleteConfirmation.show();
+        $("#dataHistoryForm").hide();
+        modalActionButton.off('click').on('click', deleteData);
+    }
+
+    $('#dataHistoryModal').modal('show');
+}
+
+// Function to handle updating data
+function updateData() {
+    const id = $('#data_id').val();
+    const nama_ortu = $('#data_nama_ortu').val();
+    const nama_anak = $('#data_nama_anak').val();
+    const usia_anak = $('#data_usia_anak').val();
+    const tanggal_konsultasi = $('#tanggal_konsultasi').val();
+    const hasil_diagnosa = $('#hasil_diagnosa').val();
+    console.log(hasil_diagnosa)
+    $.ajax({
+        type: 'PUT',
+        url: '/admin/history_konsultasi/'+id,  // Ganti dengan URL endpoint Anda
+        contentType: 'application/json',  // Set header Content-Type
+        data: JSON.stringify({ 
+            id: id,
+            nama_ortu:nama_ortu,
+            nama_anak: nama_anak,
+            usia_anak: usia_anak,
+            tanggal_konsultasi: tanggal_konsultasi,
+            hasil_diagnosa:hasil_diagnosa
+        }),
+        success: function(response) {
+            alert(response.msg);
+            $('#dataHistoryModal').modal('hide');
+            // Refresh table or take other actions
+            location.reload()
+        },
+        error: function(xhr) {
+            alert("Terjadi kesalahan: " + (xhr.responseJSON ? xhr.responseJSON.msg : "Kesalahan tidak diketahui"));
+        }
+    });
+}
+
+// Function to handle deleting data
+function deleteData() {
+    const id = $('#data_id').val();
+
+    $.ajax({
+        type: 'DELETE',
+        url: '/admin/history_konsultasi/'+id+"/delete",  // Ganti dengan URL endpoint Anda
+        contentType: 'application/json',  // Set header Content-Type
+        data: JSON.stringify({  id: id }),
+        success: function(response) {
+            alert(response.msg);
+            $('#dataHistoryModal').modal('hide');
+            // Refresh table or take other actions
+            location.reload()
+        },
+        error: function(xhr) {
+            alert("Terjadi kesalahan: " + (xhr.responseJSON ? xhr.responseJSON.msg : "Kesalahan tidak diketahui"));
+        }
+    });
+}
+    
+  </script>
+</body>
+</html>
+{% else %}
+    <script>
+        window.location.href = "/";
+    </script>
+{% endif %}

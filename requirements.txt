@@ -1,0 +1,16 @@
+flask
+flask_cors
+flask_mysqldb
+flask_security_too
+flask_sqlalchemy
+flask_jwt_extended
+Flask-Bcrypt
+Flask-mail
+python-dotenv
+pillow
+pandas
+datetime
+openpyxl
+ultralytics
+tesseract
+facenet_pytorch

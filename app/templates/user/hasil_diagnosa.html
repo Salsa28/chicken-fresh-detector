@@ -1,0 +1,129 @@
+{% if session['jwt_token'] %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EyeKids</title>
+  <!-- Link to Google Fonts Raleway -->
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      min-height: 100vh;
+      font-family: 'Raleway', sans-serif;
+      font-weight: 600;
+    }
+    .btn-custom{
+        border-radius: 60px;
+    }
+    .custom-bg-info{
+        background-color: #1F4590;
+    }
+    .custom-text-info{
+        color: #1F4590;
+    }
+    .custom-bg-warning{
+        background-color: #FFA451;
+    }
+    .custom-text-warning{
+        color:#FFA451;
+    }
+    .font-bold {
+      font-weight: 700;
+    }
+    .font-semibold {
+      font-weight: 600;
+    }
+    .font-regular {
+      font-weight: 400;
+    }
+    .navbar-brand {
+      align-items: baseline;
+    }
+    .border-medium{
+        border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+   <!-- Topbar -->
+   <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand d-flex " href="/user/dashboard">
+        <h3 class="custom-text-info font-semibold">Eye</h3><p class="custom-text-warning font-semibold">kids</p>
+    </a>
+    <div></div>
+    <div></div>
+  </nav>
+
+  <!-- Call to Action Section -->
+  <section class="container my-5 border-medium custom-bg-info text-white pb-3">
+    <div class="row">
+      <div class="col-md-12 text-center mb-3 mt-3">
+        <h1 class="font-bold ">Hasil Diagnosa</h1>
+      </div>
+        <div class="col-md-4">
+            <h2 class="font-semibold">Nama: {{ diagnosa.nama_anak }}</h2>
+            <p>Usia : {{ diagnosa.usia_anak }} Tahun</p>
+            <img src="{{ diagnosa.file_deteksi }}" class="w-100" alt="hasil konsultasi">
+            <h4 class="font-semibold  mt-2" id="hasil_predict">
+              {% for penyakit in diagnosa.hasil_diagnosa %}
+              {% if penyakit == "sehat"%}
+              {%  else %}
+              {{ penyakit }}
+              {% endif %}
+          {% endfor %}
+            </h4>
+        </div>
+        <div class="col-md-8">
+          {% set tips_shown = False %}
+          {% for penyakit in diagnosa.hasil_diagnosa %}
+            {% if penyakit != "sehat" %}
+              <h5 class="font-semibold">{{ penyakit }}</h5>
+              {% if penyakit in diagnosa.rekomendasi_diagnosa %}
+                  <p class="font-semibold">{{ diagnosa.rekomendasi_diagnosa[penyakit].pengobatan|safe }}</p>
+                  {% for link in diagnosa.rekomendasi_diagnosa[penyakit]['link_rekomendasi'] %}
+                  {% if link == "klinik" %}
+                  <a class="btn btn-custom custom-bg-warning font-semibold" href="https://www.google.com/maps/search/klinik+mata+terdekat/">Rekomendasi Klinik</a>
+                  {% elif link == "apotek" %}
+                  <a class="btn btn-custom custom-bg-warning font-semibold" href="https://www.google.com/maps/search/apotek+terdekat/">Rekomendasi Apotek</a>
+                  {% elif link == "rumah sakit"%}
+                  <a class="btn btn-custom custom-bg-warning font-semibold" href="https://www.google.com/maps/search/rumah+sakit/">Rekomendasi Rumah Sakit</a>
+                  {% endif %}
+                  {% endfor %}
+              {% endif %}
+            {% elif penyakit == "sehat" and not tips_shown %}
+            <p class="font-semibold">{{ diagnosa.rekomendasi_diagnosa[penyakit].pengobatan|safe }}</p>
+              <a class="btn btn-custom custom-bg-warning font-semibold" href="/tips">Tips Menjaga Kesehatan Mata</a>
+              {% set tips_shown = True %}
+            {% endif %}
+          {% endfor %}
+         
+        <br>
+        </div>
+    </div>
+    
+  </section>
+  <section class="container my-5">
+  <div class="row">
+    <div class="btn-custom custom-bg-warning font-semibold col-md-12 text-center pt-2 pb-2">
+      {% if session["role"]== "user" %}
+      <a href="/user/dashboard" style="color:#fff; margin-top: 100px;margin-bottom: 100px;">Back</a>
+      {% else %}
+      <a href="/admin/dashboard" style="color: #fff; margin-top: 100px;margin-bottom: 100px;">Back</a>
+      {% endif %}
+    </div>
+    </div>
+  </div>
+  </section>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+{% else %}
+    <!-- Jika jwt_token tidak ada -->
+    <script>
+        window.location.href = "/";
+    </script>
+{% endif %}

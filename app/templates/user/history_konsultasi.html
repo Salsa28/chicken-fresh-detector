@@ -1,0 +1,170 @@
+{% extends 'user/layout_user.html' %}
+{% block css %}
+<style>
+     .buttons-csv{
+    background-color: #1d7532!important;
+    color: white!important;
+    border-radius: 5px!important;
+    padding: 5px 10px!important;
+    height:40px!important;
+    }
+    .buttons-excel{
+    background-color: #1d7532!important;
+    color: white!important;
+    border-radius: 5px!important;
+    padding: 5px 10px!important;
+    height:40px!important;
+    }
+    .buttons-pdf{
+    background-color: #1d7532!important;
+    color: white!important;
+    border-radius: 5px!important;
+    padding: 5px 10px!important;
+    height:40px!important;
+    }
+    .buttons-print{
+    background-color: #1d7532!important;
+    color: white!important;
+    border-radius: 5px!important;
+    padding: 5px 10px!important;
+    height:40px!important;
+    }
+</style>
+{% endblock %}
+{% block content %}  
+<!-- Content -->
+<div class="content" id="mainContent">
+    <!-- Hero Section -->
+    <section class="container my-5" id="home">
+        <div class="row">
+            <div class="col-md-12 mb-3 text-center align-center">
+                <div class="text-center d-flex baseline">
+                    <h1 class="font-bold custom-text-info mr-3">List Table History Konsultasi</h1>
+                    <img src="../static/icon/table.svg" height="25" width="25" alt="icon_table">
+                </div>
+
+                <!-- Filter Section -->
+                <div class="mb-4">
+                  <form id="filterForm" method="GET">
+                    <div class="form-row d-flex">
+                                <div class="col-lg-1">
+                                    <a href="{{ url_for('user_history_konsultasi') }}" class="btn w-100 btn-secondary">Reset</a>
+                                </div>
+                                <div class="col-lg-2">
+                                    <input type="text" class="w-100 form-control" id="filteranything" name="filteranything" placeholder="Search" value="{% if request.args.get('filteranything') %}{{ request.args.get('filteranything') }}{% endif %}">
+                                </div>
+                                <div class="col-lg-1">
+                                    <button type="submit" class="btn w-100 btn-primary">Cari</button>
+                                </div>
+                        <div class="form-group col-2">
+                            <select name="filterYear" class="form-control w-100">
+                                <option value="">Pilih Tahun</option>
+                                {% for year in years %}
+                                {% if request.args.get('filterYear') == year %}
+                                <option value="{{ year }}" checked aria-checked="true" class="clicked" clicked>{{ year }}</option>
+                                {% else %}
+                                <option value="{{ year }}">{{ year }}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-lg-2">
+                            <select name="filterMonth" class="form-control w-100">
+                                <option value="">Pilih Bulan</option>
+                                {% for month in months %}
+                                {% if request.args.get('filterMonth') == month %}
+                                <option value="{{ month.value }}" checked aria-checked="true" class="clicked" clicked>{{ month.name }}</option>
+                                {% else %}
+                                <option value="{{ month.value }}">{{ month.name }}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select></div>
+                        <div class="form-group col-2">
+                            <input type="date" class="form-control w-100" id="filterCompleteDate" name="filterCompleteDate" value="{{ request.args.get('filterCompleteDate') }}">
+                        </div>
+                        <div class="form-group col-1">
+                            <button type="submit" class="btn btn-primary w-100">Filter</button>
+                        </div>
+                    </div>
+                </form>
+                
+                </div>
+
+                <!-- Table Section -->
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nama ortu</th>
+                                <th>Nama Anak</th>
+                                <th>Usia Anak</th>
+                                <th>Tanggal Konsultasi</th>
+                                <th>Hasil Diagnosa</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in histori_records %}
+                            <tr>
+                                <td>{{ session["full_name"] }}</td>
+                                <td>{{ i.nama_anak }}</td>
+                                <td>{{ i.usia_anak }}</td>
+                                <td>{{ i.tanggal_konsultasi }}</td>
+                                <td>{{ i.hasil_diagnosa }}</td>
+                                <td>
+                                    <button class="btn btn-info btn-sm" onclick="window.open('/user/hasil_diagnosa/{{ i.id }}', '_blank');">Detail</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+{% block js %}
+<!-- Inisialisasi DataTables -->
+
+<script>
+$(document).ready(function() {
+    $('#data-table').DataTable(
+        {
+            searching: false,
+            dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: 'Export CSV',
+                exportOptions: {
+                    columns: ':not(:last-child)' // Mengekspor semua kolom kecuali kolom terakhir
+                }
+            },
+            {
+                extend: 'excelHtml5',
+                text: 'Export Excel',
+                exportOptions: {
+                    columns: ':not(:last-child)'
+                }
+            },
+            {
+                extend: 'pdfHtml5',
+                text: 'Export PDF',
+                exportOptions: {
+                    columns: ':not(:last-child)'
+                }
+            },
+            {
+                extend: 'print',
+                text: 'Print',
+                exportOptions: {
+                    columns: ':not(:last-child)'
+                }
+            }
+        ]
+    
+});
+})
+</script>
+{% endblock %}

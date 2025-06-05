@@ -1,0 +1,295 @@
+{% if session['role']=='admin' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EyeKids</title>
+  <!-- Link to Google Fonts Raleway -->
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      min-height: 100vh;
+      font-family: 'Raleway', sans-serif;
+      font-weight: 600;
+    }
+    .navbar{
+      height: 10vh;
+      position: fixed;
+      top: 0;
+      z-index: 2;
+      left: 0;
+      width: 250px;
+      background-color: #f8f9fa00;
+    }
+    .sidebar {
+      height: 100vh;
+      position: fixed;
+      top: 65px;
+      left: 0;
+      width: 250px; 
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background-color: #f8f9fa;
+      border-right: 2px solid #ddd; 
+      transition: transform 0.3s ease;
+      padding: 20px; /* Tambahkan padding untuk memberikan ruang di dalam sidebar */
+    }
+
+    .sidebar .content {
+      flex-grow: 1;
+    }
+    .sidebar.collapsed {
+      transform: translateX(-100%);
+    }
+    .sidebar .nav-link {
+      color: #000;
+    }
+    .sidebar .nav-link:hover {
+      background-color: #e9ecef;
+    }  
+    .sidebar .social-icons {
+      height: 100px;
+      margin-top: auto; /* Mengatur ikon-ikon sosial untuk muncul di bagian paling bawah */
+      text-align: center; /* Untuk menengahkan ikon-ikon sosial */
+    }
+    .content {
+      margin-left: 250px;
+      padding: 20px;
+      transition: margin-left 0.3s ease;
+    }
+    .width-mobile{
+        width: 100%;
+    }
+    .width-desktop{
+        width: calc(100% - 250px);
+    }
+    .content.collapsed {
+      margin-left: 0;
+      width: 100%;
+    }
+    .btn-custom {
+        border-radius: 60px;
+    }
+    .custom-bg-info {
+        background-color: #1F4590;
+    }
+    .custom-text-info {
+        color: #1F4590;
+    }
+    .custom-bg-warning {
+        background-color: #FFA451;
+    }
+    .custom-text-warning {
+        color: #FFA451;
+    }
+    .font-bold {
+      font-weight: 700;
+    }
+    .font-semibold {
+      font-weight: 600;
+    }
+    .font-regular {
+      font-weight: 400;
+    }
+    .toggle-btn {
+      cursor: pointer;
+    }
+    .baseline {
+      align-items: baseline;
+    }
+    .custom-border-size {
+    height: 4px; /* Ketebalan garis diatur di sini */
+    border: none; /* Menghapus border default */
+    background-color: #1F4590;/* Warna garis */
+  }
+  .nav-link{
+    color: #ffa451 !important;;
+  }
+  </style>
+</head>
+<body>
+       <!-- Topbar -->
+   <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="d-flex baseline">
+        <a class="navbar-brand d-flex baseline" href="/admin/dashboard">
+            <h3 class="custom-text-info font-semibold">Eye</h3><p class="custom-text-warning font-semibold">kids</p>
+        </a>
+        <!-- Toggle Button -->
+        <div class="toggle-btn">
+            <button id="sidebarToggle" class="btn btn-secondary">☰</button>
+        </div>
+    </div>
+    <div></div>
+    <div></div>
+  </nav>
+  <!-- Sidebar -->
+  <nav class="sidebar bg-light p-2" >
+    <div class="text-center">
+    <img src="../static/icon/icon_profile_admin.svg" alt="icon_profile_admin">
+    <p class="font-semibold custom-text-warning">{{session['full_name']}}</p>
+    <hr class=" custom-bg-info custom-border-size btn-custom" >
+    </div>
+    <ul class="nav flex-column text-start pl-3">
+      <li class="nav-item">
+        <a class="nav-link " href="/admin/dashboard"><img src="../static/icon/jadwal.svg" height="25" width="25" alt="icon_dashboard">  Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " href="/admin/history_konsultasi"><img src="../static/icon/history_konsultasi.svg" height="25" width="25" alt="icon_username">  History Konsultasi</a>
+      </li>
+    </ul>
+    <div>
+    <hr class=" custom-bg-info custom-border-size btn-custom" >
+    </div>
+    <ul class="nav flex-column text-start pl-3">
+      <li class="nav-item">
+        <a class="nav-link " href="/admin/penyakit_terbanyak"><img src="../static/icon/icon_bar_chart.svg" height="25" width="25" alt="icon_ganti_password">  Penyakit Terbanyak</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " href="/keluar"><img src="../static/icon/logout.svg" height="25" width="25" alt="icon_keluar">  Keluar</a>
+      </li>
+    </ul>
+    <div>
+    <hr class=" custom-bg-info custom-border-size btn-custom" >
+    </div>
+    <div class="text-center social-icons">
+        <a href=""class="mr-3"><img src="../static/icon/twitter.svg" height="25" width="25" alt=""></a> 
+        <a href=""class="mr-3"><img src="../static/icon/instagram.svg" height="25" width="25" alt=""></a>
+        <a href=""><img src="../static/icon/whatsapp.svg" height="25" width="25" alt=""></a>
+    </div>
+  </nav>
+
+  
+
+  <!-- Content -->
+  <div class="content" id="mainContent">
+    <!-- Hero Section -->
+    <section class="container my-5" id="home">
+          <h2 class="text-center">Penyakit Terbanyak</h2>
+          <div class="row justify-content-center">
+            <div class="col-md-8">
+              <canvas id="myChart"></canvas>
+            </div>
+          </div>
+    </section>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    document.querySelectorAll('input').forEach(function(input) {
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault(); 
+        }
+    });
+});
+
+    $(document).ready(function () {
+    function adjustContentStyle() {
+        const content = $('.content');
+      const sidebar = document.querySelector('.sidebar');
+      const sidebarWidth = 250; // Width of the sidebar in pixels
+
+      if ($(window).width() >= 500) {
+        // Desktop view
+      content.addClass('width-desktop').removeClass('width-mobile');
+      }else {
+        // Mobile view
+      content.addClass('width-mobile').removeClass('width-desktop');
+      }
+    }
+
+    // Adjust styles on page load
+
+    adjustContentStyle();
+    // Adjust styles on window resize
+    window.addEventListener('resize', adjustContentStyle);
+      $('#sidebarToggle').on('click', function () {
+        $('.sidebar').toggleClass('collapsed');
+        $('#mainContent').toggleClass('collapsed');
+        adjustContentStyle();
+      });
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+      // Mengambil konteks 2D dari elemen <canvas> dengan ID myChart. Ini diperlukan untuk menggambar diagram di dalam canvas.
+      var ctx = document.getElementById('myChart').getContext('2d');
+      var labels= '{{ names|tojson }}';
+      console.log(labels)
+      labels = JSON.parse(labels);
+      var data = '{{ jml_kasus|tojson }}';
+      console.log(data)
+      data = JSON.parse(data);
+      // Membuat instance baru dari Chart dengan tipe diagram bar (diagram batang).
+      var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            laebls:"jumlah kasus",
+            data: data,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+              'rgba(255, 206, 86, 0.2)',
+              'rgba(75, 192, 192, 0.2)',
+              'rgba(153, 102, 255, 0.2)'
+            ],
+            borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+{% else %}
+    <!-- Jika jwt_token tidak ada -->
+    <script>
+        window.location.href = "/";
+    </script>
+{% endif %}
+<!-- jika satu diagram saja palinh banyak -->
+<!-- var index = 0; // Ganti ini dengan indeks penyakit yang ingin Anda tampilkan
+var selectedLabel = labels[index];
+var selectedData = data[index];
+
+var myChart = new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: [selectedLabel], // Label penyakit yang dipilih
+    datasets: [{
+      label: 'Jumlah Kasus',
+      data: [selectedData], // Data untuk penyakit yang dipilih
+      backgroundColor: 'rgba(255, 99, 132, 0.2)',
+      borderColor: 'rgba(255, 99, 132, 1)',
+      borderWidth: 1
+    }]
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});
+-->

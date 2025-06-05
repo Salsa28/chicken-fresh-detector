@@ -1,0 +1,315 @@
+{% if session['role'] == 'user' %}
+<script>
+  window.location.href = "/user/dashboard";
+</script>
+{% elif session['role'] == 'admin' %}
+<script>
+  window.location.href = "/admin/dashboard";
+</script>
+{% else %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="/static/login_register_user/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    html, body { }
+    ::selection { background: #1a75ff; color: #fff; }
+    .wrapper { overflow: hidden; max-width: 390px; background: #1F4590; padding: 30px; border-radius: 15px; box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px; }
+    .wrapper .title-text { display: flex; width: 200%; color: #FFA451; }
+    .wrapper .title { width: 50%; font-size: 35px; font-weight: 600; text-align: center; transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+    .wrapper .slide-controls { position: relative; display: flex; height: 50px; width: 100%; overflow: hidden; margin: 30px 0 10px 0; justify-content: space-between; border: 1px solid lightgrey; border-radius: 15px; }
+    .slide-controls .slide { height: 100%; width: 100%; color: #fff; font-size: 18px; font-weight: 500; text-align: center; line-height: 48px; cursor: pointer; z-index: 1; transition: all 0.6s ease; }
+    .slide-controls label.signup { color: #1F4590; }
+    .slide-controls .slider-tab { position: absolute; height: 100%; width: 50%; left: 0; z-index: 0; border-radius: 15px; background: #FFA451; transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+    input[type="radio"] { display: none; }
+    #signup:checked ~ .slider-tab { left: 50%; }
+    #signup:checked ~ label.signup { color: #fff; cursor: default; user-select: none; }
+    #signup:checked ~ label.login { color: #000; }
+    #login:checked ~ label.signup { color: #000; }
+    #login:checked ~ label.login { cursor: default; user-select: none; }
+    .wrapper .form-container { width: 100%; overflow: hidden; }
+    .form-container .form-inner { display: flex; width: 200%; }
+    .form-container .form-inner form { width: 50%; transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+    .form-inner form .field { height: 50px; width: 100%; margin-top: 20px; }
+    .form-inner form .field input { height: 100%; width: 100%; outline: none; padding-left: 15px; border-radius: 15px; border: 1px solid lightgrey; border-bottom-width: 2px; font-size: 17px; transition: all 0.3s ease; }
+    .form-inner form .field input:focus { border-color: #1a75ff; }
+    .form-inner form .field input::placeholder { color: #999; transition: all 0.3s ease; }
+    form .field input:focus::placeholder { color: #1a75ff; }
+    .form-inner form .pass-link { margin-top: 5px; }
+    .form-inner form .signup-link { text-align: center; margin-top: 30px; }
+    .form-inner form .pass-link a, .form-inner form .signup-link a { color: #fff; text-decoration: none; }
+    .form-inner form .pass-link a:hover, .form-inner form .signup-link a:hover { text-decoration: underline; }
+    .btn-custom { border-radius: 60px; }
+    .custom-bg-info { background-color: #1F4590; }
+    .custom-text-info { color: #1F4590; }
+    .custom-bg-warning { background-color: #FFA451; }
+    .custom-text-warning { color: #FFA451; }
+    .font-bold { font-weight: 700; }
+    .font-semibold { font-weight: 600; }
+    .font-regular { font-weight: 400; }
+    .navbar-brand { align-items: baseline; position: absolute; top: 20px; left: 20px; }
+    .border-medium { border-radius: 10px; }
+    .field { position: relative; }
+    .field-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; }
+    /* Tambahkan atau ubah CSS untuk mendukung layout yang diminta */
+.container-fluid {
+  height: 100vh;
+  display: flex;
+  padding: 0;
+  margin: 0;
+}
+
+.bg-image img {
+  width: 100%;
+  height: 100vh;
+}
+.wrappe{
+  display: grid; height: 100%; width: 100%; place-items: center; 
+}
+@media (max-width: 767px) {
+  .bg-image {
+    display: none;
+  }
+  .wrapper {
+    max-width: 100%;
+    padding: 20px;
+  }
+}
+
+  </style>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+
+</head>
+<body>
+  <a class="navbar-brand d-flex" href="/">
+    <h3 class="custom-text-info font-semibold">Eye</h3><p class="custom-text-warning font-semibold">kids <img src="/static/icon/eye.svg" style="margin-left: 5px; margin-bottom: 10px;" width="30px" height="30px" alt="logooo"/></p>
+  </a>
+  <div class="container-fluid">
+    <a class="navbar-brand d-flex" href="/">
+      <h3 class="custom-text-info font-semibold">Eye</h3><p class="custom-text-warning font-semibold">kids <img src="/static/icon/eye.svg" style="margin-left: 5px; margin-bottom: 10px;" width="30px" height="30px" alt="logooo"/></p>
+    </a>
+    <div class="row no-gutters">
+      <a class="navbar-brand d-flex" href="/">
+        <h3 class="custom-text-info font-semibold">Eye</h3><p class="custom-text-warning font-semibold">kids <img src="/static/icon/eye.svg" style="margin-left: 5px; margin-bottom: 10px;" width="30px" height="30px" alt="logooo"/></p>
+      </a>
+      <div class="col-lg-8 bg-image d-none center d-lg-block flex-start">
+        <!-- <img src="/static/image/eye_2.jpg" class="img-fluid" style="width: 80%;" alt="omaga"> -->
+        <!-- <img src="/static/image/eye_2.jpg" class="img-fluid" style="width: 80%;" alt="omaga"> -->
+        <!-- <img src="/static/image/eye_3.webp" class="w-100 img-fluid" alt="omaga"> -->
+        <!-- <img src="/static/image/bg_tips.svg" class="w-100 img-fluid" alt="omaga"> -->
+        <img src="/static/image/eye_4.png" class="w-100 img-fluid" alt="omaga">
+      </div>
+      <div class="col-lg-4 w-100">
+        <div class="wrappe w-100 " style="background-color: #fff;" >
+          <!-- Isi form login dan registrasi tetap sama seperti sebelumnya -->
+    <div class=""></div>
+<div class="wrapper">
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div id="flashMessage" style="position: fixed; top: 0; right: 0; z-index: 9999;" class="mt-3 mr-2 alert alert-success alert-dismissible bg-success text-white border-0 fade show" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      {{ messages[0] }}
+    </div>
+  {% endif %}
+  {%   endwith %}
+
+  <div class="title-text">
+    <div class="title login">Login <img src="/static/icon/eye.svg" width="30px" height="30px" alt="logooo"></div>
+    <div class="title signup">Registrasi <img src="/static/icon/eye.svg" width="30px" height="30px" alt="logooo"></div>
+  </div>
+  <div class="form-container">
+    <div class="slide-controls">
+      <input type="radio" name="slide" id="login" checked>
+      <input type="radio" name="slide" id="signup">
+      <label for="login" class="slide login">Login</label>
+      <label for="signup" class="slide signup">Daftar</label>
+      <div class="slider-tab"></div>
+    </div>
+    <div class="form-inner">
+      <form action="#" class="login">
+        <div class="field">
+          <input type="text" id="username-login" placeholder="Masukan Username" required>
+        </div>
+        <div class="field">
+          <input type="password" id="pswd-login" placeholder="Masukan Password" required>
+          <span toggle="#pswd-login" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+        </div>
+        
+        <div class="pass-link">
+          <a href="/forgotpassword">Lupa password?</a>
+          <a href="/verif_email">Verifikasi Email</a>
+        </div>
+        <p class="text-danger" id="msg-login"></p>
+        <button class="btn btn-custom custom-bg-warning mt-2 w-100" type="button"  id="login-button">Submit</button>
+        <div class="signup-link">
+          Belum punya akun? <a href="">Daftar sekarang</a>
+        </div>
+      </form>
+      <form action="#" class="signup">
+        <div class="field">
+          <input type="text" id="username-daftar" placeholder="Masukan Username" required>
+        </div>
+        <div class="field">
+          <input type="text" id="email-daftar" placeholder="Masukan Email" required>
+        </div>
+        <div class="field">
+          <input type="password" id="pswd-daftar" placeholder="Masukan Password" required>
+          <span toggle="#pswd-daftar" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+        </div>                        
+        <div class="field">
+          <input type="password" id="re-pswd-daftar" placeholder="Konfirmasi Ulang Password" required>
+          <span toggle="#re-pswd-daftar" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+        </div>
+        <p class="text-danger" id="msg-register"></p>
+          <button class="btn btn-custom custom-bg-warning mt-2 w-100" type="button" id="daftar-button">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+<div>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+  const loginText = document.querySelector(".title-text .login");
+  const loginForm = document.querySelector("form.login");
+  const loginBtn = document.querySelector("label.login");
+  const signupBtn = document.querySelector("label.signup");
+  const signupText = document.querySelector(".title-text .signup");
+  const signupForm = document.querySelector("form.signup");
+
+  signupBtn.onclick = (() => {
+    loginForm.style.marginLeft = "-50%";
+    loginText.style.marginLeft = "-50%";
+  });
+  loginBtn.onclick = (() => {
+    loginForm.style.marginLeft = "0%";
+    loginText.style.marginLeft = "0%";
+  });
+</script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+  document.querySelectorAll('input').forEach(function(input) {
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault(); 
+        }
+    });
+});
+$(document).on('click', '.toggle-password', function() {
+  $(this).toggleClass('fa-eye fa-eye-slash');
+  var input = $($(this).attr('toggle'));
+  if (input.attr('type') === 'password') {
+    input.attr('type', 'text');
+  } else {
+    input.attr('type', 'password');
+  }
+});
+
+  document.getElementById("msg-login").style.display = "none";
+  document.getElementById("msg-register").style.display = "none";
+  function saveTokenToLocalStorage(token) {
+      localStorage.setItem('jwt_token', token);
+  }
+  function kirim(pilihan) {
+      if (pilihan === "login") {
+        const usernameLogin = document.getElementById('username-login').value;
+        const pswdLogin = document.getElementById('pswd-login').value;
+        if (!usernameLogin || !pswdLogin) {
+          alert("Mohon lengkapi semua field.");
+          window.location.href = "/login";
+        } else {
+
+          var uri = "/login";
+          var msg = "msg-login";
+
+          var data_kirim = JSON.stringify({
+            username: document.getElementById("username-login").value,
+            password: document.getElementById("pswd-login").value
+          });
+          var next_url = "/user/dashboard";
+          var pesan = "login berhasil"
+          $('#login-button').text("Loading...")
+          $('#login-button').attr("disabled","disabled")
+        }
+      }
+      else {
+        const usernameDaftar = document.getElementById('username-daftar').value;
+        const emailDaftar = document.getElementById('email-daftar').value;
+        const pswdDaftar = document.getElementById('pswd-daftar').value;
+        const repswd = document.getElementById("re-pswd-daftar").value
+
+
+        if (!usernameDaftar || !emailDaftar || !pswdDaftar || !repswd) {
+          alert("Mohon lengkapi semua field.");
+          window.location.href = "/login";
+        } else {
+          const emailcek = document.getElementById('email-daftar');
+          if (!emailcek.checkValidity()) {
+            alert("Masukkan alamat email yang valid.");
+          window.location.href = "/login";
+            return;
+          }
+          var uri = "/bikin_akun_user";
+          var msg = "msg-register";
+          var data_kirim = JSON.stringify({
+            username: document.getElementById("username-daftar").value,
+            email: document.getElementById("email-daftar").value,
+            password: document.getElementById("pswd-daftar").value,
+            re_password: document.getElementById("re-pswd-daftar").value
+          });
+          var pesan = "Register berhasil silahkan cek email anda"
+          var next_url = "/login";
+          $('#daftar-button').text("Loading...")
+          $('#daftar-button').attr("disabled", "disabled")
+        }
+      }
+      console.log(data_kirim)
+      $.ajax({
+        url: uri,
+        method: 'POST',
+        contentType: 'application/json',
+        data: data_kirim,
+        success: function (response) {
+          // Proses respons dari server
+          console.log(response);
+          alert(pesan);
+          window.location.href = "/login";
+        },
+        error: function (xhr) {
+          // Tangani dan tampilkan pesan error dari server
+          var errorMsg = "Terjadi kesalahan pada Server";
+          if (xhr.responseJSON && xhr.responseJSON.msg) {
+            errorMsg = xhr.responseJSON.msg;
+          }
+          alert(errorMsg);
+          window.location.href = "/login";
+
+        }
+      })
+    }
+document.getElementById("login-button").addEventListener("click", function() { kirim("login"); });
+document.getElementById("daftar-button").addEventListener("click", function() { kirim("register"); });
+</script>
+<script>
+// Hide the flash message after 1 second
+setTimeout(function() {
+  $('#flashMessage').fadeOut('fast');
+}, 1000); // Adjust the timeout value as needed
+</script>
+</body>
+</html>
+{% endif %}

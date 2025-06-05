@@ -1,0 +1,25 @@
+# Ignore pycache directory
+__pycache__/
+
+# Ignore virtual environment directories
+venv/
+env/
+.env/
+zulfa/
+# Ignore log files
+*.log
+
+# Ignore database files (change the extension if needed)
+*.sqlite
+
+# Ignore environment-specific settings
+instance/
+config.py
+
+# Ignore IDE and editor-specific files
+.vscode/
+.idea/
+
+# Ignore any other files or directories you want to exclude
+app/static/upload
+app/static/detect

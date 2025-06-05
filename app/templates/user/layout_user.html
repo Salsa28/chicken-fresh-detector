@@ -1,0 +1,135 @@
+{% if session['role'] == 'user' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EyeKids</title>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.1.4/css/dataTables.dataTables.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.1.1/css/buttons.dataTables.css">
+  <style>
+    body { min-height: 100vh; font-family: 'Raleway', sans-serif; font-weight: 600; }
+    .navbar { height: 10vh; position: fixed; top: 0; z-index: 2; left: 0; width: 100%; background-color: transparent; }
+    .sidebar { height: 100vh; position: fixed; top: 65px; left: 0; width: 250px; display: flex; flex-direction: column; justify-content: space-between; background-color: #f8f9fa; border-right: 2px solid #ddd; transition: transform 0.3s ease; padding: 20px; }
+    .sidebar .content { flex-grow: 1; }
+    .sidebar.collapsed { transform: translateX(-100%); }
+    .sidebar .nav-link { color: #000; }
+    .sidebar .nav-link:hover { background-color: #e9ecef; }
+    .sidebar .social-icons { height: 100px; margin-top: auto; text-align: center; }
+    .content { margin-left: 250px; padding: 20px; transition: margin-left 0.3s ease; }
+    .content.collapsed { margin-left: 0; width: 100%; }
+    .btn-custom { border-radius: 60px; } 
+    .custom-bg-info { background-color: #1F4590; }
+    .custom-text-info { color: #1F4590; }
+    .custom-bg-warning { background-color: #FFA451; }
+    .custom-text-warning { color: #FFA451; }
+    .font-bold { font-weight: 700; }
+    .font-semibold { font-weight: 600; }
+    .font-regular { font-weight: 400; }
+    .toggle-btn { cursor: pointer; }
+    .baseline { align-items: baseline; }
+    .custom-border-size { height: 4px; border: none; background-color: #1F4590; }
+    .nav-link { color: #ffa451 !important; }
+    .border-medium { border-radius: 10px; }
+    .custom-border-info { border-color: #1F4590; }
+    .text-white { color: #fff; }
+  </style>    
+  {% block css %} {% endblock %}        
+</head>
+<body>
+  <!-- Topbar -->
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="d-flex baseline">
+      <a class="navbar-brand d-flex baseline" href="/user/dashboard">
+        <h3 class="custom-text-info font-semibold">Eye</h3>
+        <p class="custom-text-warning font-semibold">kids</p>
+      </a>
+    </div>
+    <!-- Toggle Button -->
+    <div class="toggle-btn text-end">
+      <button id="sidebarToggle" class="btn btn-secondary" aria-expanded="false" aria-controls="sidebar">☰</button>
+    </div>
+  </nav>
+  <!-- Sidebar -->
+  <nav class="sidebar bg-light p-2" id="sidebar" aria-labelledby="sidebarToggle">
+    <div class="text-center">
+      <img src="../static/icon/profile_default.svg" alt="icon_profile_Default">
+      <p class="font-semibold custom-text-warning">{{ session['full_name'] }}</p>
+      <hr class="custom-bg-info custom-border-size">
+    </div>
+    <ul class="nav flex-column text-start pl-3">
+      <li class="nav-item">
+        <a class="nav-link" href="/user/dashboard"><img src="../static/icon/jadwal.svg" height="25" width="25" alt="icon_dashboard"> Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/user/profile"><img src="../static/icon/icon_profile.svg" height="25" width="25" alt="icon_username"> Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/user/history_konsultasi"><img src="../static/icon/history_user.svg" height="25" width="25" alt="icon_history"> History</a>
+      </li>
+    </ul>
+    <div>
+      <hr class="custom-bg-info custom-border-size">
+    </div>
+    <ul class="nav flex-column text-start pl-3">
+      <li class="nav-item">
+        <a class="nav-link" href="/ganti_password"><img src="../static/icon/ganti_password.svg" height="25" width="25" alt="icon_ganti_password"> Ganti Password</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/keluar"><img src="../static/icon/logout.svg" height="25" width="25" alt="icon_keluar"> Keluar</a>
+      </li>
+    </ul>
+    <div>
+      <hr class="custom-bg-info custom-border-size">
+    </div>
+    <div class="text-center social-icons">
+      <a href="#" class="mr-3"><img src="../static/icon/twitter.svg" height="25" width="25" alt="Twitter"></a>
+      <a href="#" class="mr-3"><img src="../static/icon/instagram.svg" height="25" width="25" alt="Instagram"></a>
+      <a href="#"><img src="../static/icon/whatsapp.svg" height="25" width="25" alt="WhatsApp"></a>
+    </div>
+  </nav>
+  <div class="content">
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/2.1.4/js/dataTables.js"></script>
+  <script src="https://cdn.datatables.net/buttons/3.1.1/js/dataTables.buttons.js"></script>
+  <script src="https://cdn.datatables.net/buttons/3.1.1/js/buttons.dataTables.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+  <script src="https://cdn.datatables.net/buttons/3.1.1/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/3.1.1/js/buttons.print.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+    // Hide the flash message after 1 second
+    setTimeout(function() {
+      $('#flashMessage').fadeOut('fast');
+    }, 1000); // Adjust the timeout value as needed
+
+    // Sidebar toggle functionality
+    $('#sidebarToggle').on('click', function() {
+      $('.sidebar').toggleClass('collapsed');
+      $('.content').toggleClass('collapsed');
+    });
+  </script>
+  {% block js %}{% endblock %}
+</body>
+</html>
+{% elif session['role'] == 'admin' %}
+<script>
+  window.location.href = "/admin/dashboard";
+</script>
+{% else %}
+<script>
+  window.location.href = "/";
+</script>
+{% endif %}
