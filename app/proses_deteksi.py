@@ -47,7 +47,7 @@ def predict():
     print("loading..")
 
     try:
-        names = ['ayam segar']
+        names = ['ayam segar','ayam tiren']
         detected_names = ['']
         model = YOLO(model_path)
         results = model(destination, conf=conf, save=True, project=save_path)
