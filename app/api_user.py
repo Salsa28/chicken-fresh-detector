@@ -81,7 +81,7 @@ def create_data_anak():
             print(anak.nama_anak)
             print(nama_anak)
             if anak.nama_anak == nama_anak:
-                return jsonify({"msg":"maaf nama anak tidak boleh sama "})
+                return jsonify({"msg":"maaf nama toko tidak boleh sama "})
         # Membuat instance DataAnak
         data_anak = DataAnak(
             user_id=session['id'],
@@ -92,7 +92,7 @@ def create_data_anak():
         db.session.add(data_anak)
         db.session.commit()
 
-        return jsonify({"msg": "Data anak berhasil ditambahkan"}), 201
+        return jsonify({"msg": "Data Toko berhasil ditambahkan"}), 201
 
     except Exception as e:
         db.session.rollback()
@@ -107,7 +107,7 @@ def update_data_anak(id):
         data_anak = DataAnak.query.filter_by(id=id, user_id=session['id']).first()
         data = request.get_json()
         if not data_anak:
-            return jsonify({"msg": "Data anak tidak ditemukan"}), 404
+            return jsonify({"msg": "Data Toko tidak ditemukan"}), 404
 
         nama_anak = data['nama_anak']
         usia_anak = data['usia_anak']
@@ -119,7 +119,7 @@ def update_data_anak(id):
 
         db.session.commit()
 
-        return jsonify({"msg": "Data anak berhasil diperbarui"}), 200
+        return jsonify({"msg": "Data Toko berhasil diperbarui"}), 200
 
     except Exception as e:
         db.session.rollback()
@@ -131,12 +131,12 @@ def delete_data_anak(id):
         data_anak = DataAnak.query.filter_by(id=id, user_id=session['id']).first()
         
         if not data_anak:
-            return jsonify({"msg": "Data anak tidak ditemukan"}), 404
+            return jsonify({"msg": "Data Toko tidak ditemukan"}), 404
 
         db.session.delete(data_anak)
         db.session.commit()
 
-        return jsonify({"msg": "Data anak berhasil dihapus"}), 200
+        return jsonify({"msg": "Data Toko berhasil dihapus"}), 200
 
     except Exception as e:
         db.session.rollback()
@@ -187,7 +187,7 @@ def update_profile():
         data_anak = DataAnak.query.filter_by(user_id=session['id']).all()
         # Cek jika data anak kosong
         if not data_anak:
-            return jsonify({"msg": "Minimal tambahkan data anak 1 sebelum melanjutkan"}), 400
+            return jsonify({"msg": "Minimal tambahkan Data Toko 1 sebelum melanjutkan"}), 400
 
         # Check if all required fields are filled
         if not all([user.username, user.full_name, user.email]):
@@ -351,7 +351,7 @@ def user_history_konsultasi():
         diagnosa = {
             'id': history_record.id,
             'nama_user': session["full_name"],
-            'nama_anak': data_anak.nama_anak if data_anak else "Data Anak Tidak Ditemukan",
+            'nama_anak': data_anak.nama_anak if data_anak else "Data Toko Tidak Ditemukan",
             'usia_anak': data_anak.usia_anak if data_anak else "N/A",
             'tanggal_konsultasi': history_record.tanggal_konsultasi.strftime('%Y-%m-%d'),
             'hasil_diagnosa': history_record.hasil_diagnosa,
