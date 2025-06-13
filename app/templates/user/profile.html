@@ -22,7 +22,7 @@
       {% endif %}
       <form id="form-now">
         <div class="form-group">
-          <label class="font-semibold" style="color: #FFA451;"><img src="../static/icon/username.svg" alt="Username Icon"> Nama orang tua</label>
+          <label class="font-semibold" style="color: #FFA451;"><img src="../static/icon/username.svg" alt="Username Icon"> Nama Lengkap Anda</label>
           <input type="text" class="form-control " name="full_name" id="full_name" value="{{ session['full_name'] }}">
         </div>
         <div class="form-group">
@@ -44,9 +44,9 @@
       <thead>
         <tr>
           <th>No</th>
-          <th>Nama Anak</th>
-          <th>Usia Anak</th>
-          <th>Jenis Kelamin</th>
+          <th>Nama Toko</th>
+          <th>Usia Toko</th>
+          <th>Jenis Toko</th>
           <th>aksi</th>
         </tr>
       </thead>
@@ -56,7 +56,11 @@
           <td>{{ anak.id }}</td>
           <td>{{ anak.nama_anak }}</td>
           <td>{{ anak.usia_anak }}</td>
-          <td>{{ anak.jenis_kelamin }}</td>
+          <td>{% if anak.jenis_kelamin == L %}
+		  Mandiri
+		  {% else %}
+		  CV / PT
+		  {% endif %}</td>
           <td>
             <button class="btn btn-custom-warning mb-2 bg-warning text-white" onclick="showModal('edit', '{{ anak.id }}', '{{ anak.nama_anak }}', '{{ anak.usia_anak }}', '{{ anak.jenis_kelamin }}')"> Edit Data </button>
             <button class="btn btn-custom-danger mb-2 bg-danger text-white" onclick="showModal('delete', '{{ anak.id }}')"> Hapus Data </button>
@@ -81,22 +85,22 @@
               <form id="dataAnakForm">
                   <input type="hidden" id="data_id">
                   <div class="form-group">
-                      <label for="data_nama_anak">Nama Anak</label>
+                      <label for="data_nama_anak">Nama Toko</label>
                       <input type="text" class="form-control" id="data_nama_anak">
                   </div>
                   <div class="form-group">
-                      <label for="data_usia_anak">Usia Anak</label>
+                      <label for="data_usia_anak">Usia Toko (Tahun)</label>
                       <input type="text" class="form-control" id="data_usia_anak">
                   </div>
                   <div class="form-group">
-                    <label>Jenis Kelamin</label>
+                    <label>Jenis Toko</label>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="jenis_kelamin" id="jenis_kelamin_l" value="L">
-                        <label class="form-check-label" for="jenis_kelamin_l">Laki-laki</label>
+                        <label class="form-check-label" for="jenis_kelamin_l">Mandiri</label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="jenis_kelamin" id="jenis_kelamin_p" value="P">
-                        <label class="form-check-label" for="jenis_kelamin_p">Perempuan</label>
+                        <label class="form-check-label" for="jenis_kelamin_p">CV / PT</label>
                     </div>
                 </div>
               </form>

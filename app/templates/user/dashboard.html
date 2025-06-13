@@ -12,7 +12,7 @@
         <div class="row">
             <div class="col-md-6 mb-3 text-center">
                 <img src="../static/icon/upload_gambar.svg" alt="icon_upload_gambar" class="img-responsive img">
-                <p class="font-semibold mt-1">Upload gambar mata anak</p>
+                <p class="font-semibold mt-1">Upload Gambar Ayam</p>
                 <input id="FormGambar" name="file" type="file" accept="image/*" class="btn btn-custom custom-bg-warning w-100 text-white font-semibold" />
             </div>
             <div class="col-md-6 mb-3 text-center">
@@ -22,7 +22,7 @@
             </div>
             <div class="col-md-12 mb-3 text-center">
                 <img src="../static/icon/upload_kamera.svg" alt="icon_upload_camera" class="img-responsive img">
-                <p class="font-semibold mt-1">Foto mata anak</p>
+                <p class="font-semibold mt-1">Foto Ayam</p>
                 <button data-toggle="modal" data-target="#cameraModal" id="open_camera" class="btn btn-custom custom-bg-warning w-100 text-white font-semibold">Buka Kamera</button>
             </div>
         </div>
@@ -52,7 +52,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="dataAnakModalLabel">Pilih Data Anak</h5>
+                <h5 class="modal-title" id="dataAnakModalLabel">Pilih Data Toko</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
@@ -60,9 +60,9 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nama Anak</th>
-                            <th>Usia Anak</th>
-                            <th>Jenis Kelamin</th>
+                            <th>Nama Toko</th>
+                            <th>Usia Toko (Tahun)</th>
+                            <th>Jenis Toko</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -72,7 +72,11 @@
                             <td>{{ anak.id }}</td>
                             <td>{{ anak.nama_anak }}</td>
                             <td>{{ anak.usia_anak }}</td>
-                            <td>{{ anak.jenis_kelamin }}</td>
+                            <td>{% if anak.jenis_kelamin == L %}
+		  Mandiri
+		  {% else %}
+		  CV / PT
+		  {% endif %}</td>
                             <td>
                                 <button class="btn btn-success pilih-anak" data-id="{{ anak.id }}">Pilih</button>
                             </td>

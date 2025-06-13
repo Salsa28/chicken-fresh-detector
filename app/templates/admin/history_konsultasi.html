@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EyeKids</title>
+  <title>Deteksi Ayam Tiren</title>
   <!-- Link to Google Fonts Raleway -->
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
   
@@ -211,7 +211,7 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="d-flex baseline">
       <a class="navbar-brand d-flex baseline" href="/admin/dashboard">
-        <h3 class="custom-text-info font-semibold">Eye</h3><p class="custom-text-warning font-semibold">kids</p>
+        <h3 class="custom-text-info font-semibold">Deteksi</h3><p class="custom-text-warning font-semibold"></p>
       </a>
       <!-- Toggle Button -->
       <div class="toggle-btn">
@@ -231,7 +231,7 @@
         <a class="nav-link" href="/admin/dashboard"><img src="../static/icon/jadwal.svg" height="25" width="25" alt="icon_dashboard"> Dashboard</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/admin/history_konsultasi"><img src="../static/icon/history_konsultasi.svg" height="25" width="25" alt="icon_history_konsultasi"> History Konsultasi</a>
+        <a class="nav-link" href="/admin/history_konsultasi"><img src="../static/icon/history_konsultasi.svg" height="25" width="25" alt="icon_history_konsultasi"> History Deteksi</a>
       </li>
     </ul>
     <div>
@@ -239,7 +239,7 @@
     </div>
     <ul class="nav flex-column text-start pl-3">
       <li class="nav-item">
-        <a class="nav-link" href="/admin/penyakit_terbanyak"><img src="../static/icon/icon_bar_chart.svg" height="25" width="25" alt="icon_bar_chart"> Penyakit Terbanyak</a>
+        <a class="nav-link" href="/admin/penyakit_terbanyak"><img src="../static/icon/icon_bar_chart.svg" height="25" width="25" alt="icon_bar_chart"> Deteksi Terbanyak</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/keluar"><img src="../static/icon/logout.svg" height="25" width="25" alt="icon_keluar"> Keluar</a>
@@ -264,7 +264,7 @@
       <div class="row">
         <div class="col-md-12 mb-3 text-center align-center">
           <div class="text-center d-flex baseline">
-            <h1 class="font-bold custom-text-info mr-3">List Table History Konsultasi</h1>
+            <h1 class="font-bold custom-text-info mr-3">List Table History Diagnosa</h1>
             <img src="../static/icon/table.svg" height="25" width="25" alt="icon_table">
           </div>
           <div class="mt-2 mb-4">
@@ -316,9 +316,9 @@
               <thead>
                 <tr>
                   <th>Nama</th>
-                  <th>Nama Anak</th>
-                  <th>Usia Anak</th>
-                  <th>Tanggal Konsultasi</th>
+                  <th>Nama Toko</th>
+                  <th>Usia Toko</th>
+                  <th>Tanggal Diagnosa</th>
                   <th>Hasil Diagnosa</th>
                   <th>Aksi</th>
                 </tr>
@@ -363,11 +363,11 @@
                     <input type="text" class="form-control" id="data_nama_ortu">
                 </div>
                   <div class="form-group">
-                      <label for="data_nama_anak">Nama Anak</label>
+                      <label for="data_nama_anak">Nama Toko</label>
                       <input type="text" class="form-control" id="data_nama_anak">
                   </div>
                   <div class="form-group">
-                      <label for="data_usia_anak">Usia Anak</label>
+                      <label for="data_usia_anak">Usia Toko</label>
                       <input type="text" class="form-control" id="data_usia_anak">
                   </div>
                   <div class="form-group">
@@ -454,7 +454,7 @@ function showModal(action, id, nama_ortu, nama_anak, usia_anak, tanggal_konsulta
 
      if (action === 'edit') {
         $("#dataHistoryForm").show();
-        modalTitle.text('Edit Data Anak');
+        modalTitle.text('Edit Data Toko');
         modalActionButton.text('Simpan');
         $('#data_id').val(id);
         $('#data_nama_ortu').val(nama_ortu || '');
@@ -465,7 +465,7 @@ function showModal(action, id, nama_ortu, nama_anak, usia_anak, tanggal_konsulta
         
         modalActionButton.off('click').on('click', updateData);
     } else if (action === 'delete') {
-        modalTitle.text('Hapus Data Anak');
+        modalTitle.text('Hapus Data Toko');
         modalActionButton.text('Hapus');
         $('#data_id').val(id);
         deleteConfirmation.show();

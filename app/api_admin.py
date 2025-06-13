@@ -193,7 +193,7 @@ def delete_history_konsultasi(id):
 @login_role_required('admin')
 def penyakit_terbanyak():
     # Daftar nama penyakit
-    names = ['strabismus (mata juling)', 'ptosis (kelopak mata turun)', 'mata merah', 'mata bengkak', 'mata bintitan']
+    names = ["Ayam Tiren", "Ayam Segar"]
 
     # Inisialisasi jumlah kasus dengan 0 untuk setiap nama
     jml_kasus = [0] * len(names)
@@ -207,6 +207,8 @@ def penyakit_terbanyak():
         for index, penyakit in enumerate(names):
             if penyakit in hasil_diagnosa:  # Sesuaikan dengan cara Anda menyimpan data penyakit
                 jml_kasus[index] += 1
+            else:
+                jml_kasus[1] += 1
 
     return render_template('admin/penyakit_terbanyak.html', names=names, jml_kasus=jml_kasus)
 # Setelah proses penghitungan selesai, data dihitung kemudian dikirim ke template HTML penyakit_terbanyak.html menggunakan fungsi render_template.
