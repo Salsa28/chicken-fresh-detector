@@ -1,4 +1,4 @@
-from . import app,mysql,db,allowed_file, History,Rekomendasi,login_role_required,DataAnak,User
+from . import app,mysql,db,allowed_file, History,Rekomendasi,login_role_required,DataToko,User
 from flask import render_template, request, jsonify, redirect, url_for,session,g,abort,flash
 import os,textwrap, locale, json, uuid, time,re
 import pandas as pd
@@ -131,16 +131,16 @@ def history_konsultasi():
             query = query.filter(extract('year', History.tanggal_konsultasi) == filter_year)
     
     # Aliased untuk tabel-tabel yang ingin di-join
-    data_anak_alias = aliased(DataAnak)
+    data_toko_alias = aliased(DataToko)
     user_alias = aliased(User)
 
     if filter_anything:
-        query = query.join(data_anak_alias, History.dataanak_id == data_anak_alias.id)\
+        query = query.join(data_toko_alias, History.datatoko_id == data_toko_alias.id)\
                     .join(user_alias, History.user_id == user_alias.id)\
                     .filter(
             db.or_(
-                data_anak_alias.nama_anak.ilike(f'%{filter_anything}%'),
-                data_anak_alias.usia_anak.ilike(f'%{filter_anything}%'),
+                data_toko_alias.nama_toko.ilike(f'%{filter_anything}%'),
+                data_toko_alias.usia_toko.ilike(f'%{filter_anything}%'),
                 History.tanggal_konsultasi.ilike(f'%{filter_anything}%'),
                 History.hasil_diagnosa.ilike(f'%{filter_anything}%'),
                 user_alias.full_name.ilike(f'%{filter_anything}%')
@@ -151,13 +151,13 @@ def history_konsultasi():
     diagnosa_records = []
 
     for history_record in histori_records:
-        data_anak = DataAnak.query.filter_by(id=history_record.dataanak_id).first()
+        data_toko = DataToko.query.filter_by(id=history_record.datatoko_id).first()
         user = User.query.filter_by(id = history_record.user_id).first()
         diagnosa = {
             'id': history_record.id,
             'nama_user': user.full_name,
-            'nama_anak': data_anak.nama_anak if data_anak else "Data Anak Tidak Ditemukan",
-            'usia_anak': data_anak.usia_anak if data_anak else "N/A",
+            'nama_toko': data_toko.nama_toko if data_toko else "Data Toko Tidak Ditemukan",
+            'usia_toko': data_toko.usia_toko if data_toko else "N/A",
             'tanggal_konsultasi': history_record.tanggal_konsultasi.strftime('%Y-%m-%d'),
             'hasil_diagnosa': history_record.hasil_diagnosa,
         }
@@ -188,11 +188,11 @@ def delete_history_konsultasi(id):
     db.session.commit()
     return jsonify({'msg': 'History deleted successfully!'})
 
-#halaman penyakit terbanyak
-@app.route('/admin/penyakit_terbanyak')
+#halaman deteksi terbanyak
+@app.route('/admin/deteksi_terbanyak')
 @login_role_required('admin')
-def penyakit_terbanyak():
-    # Daftar nama penyakit
+def deteksi_terbanyak():
+    # Daftar nama deteksi
     names = ["Ayam Tiren", "Ayam Segar"]
 
     # Inisialisasi jumlah kasus dengan 0 untuk setiap nama
@@ -201,17 +201,17 @@ def penyakit_terbanyak():
     # Ambil data dari database
     history_records = History.query.all()
 
-    # Hitung jumlah kasus untuk setiap penyakit
+    # Hitung jumlah kasus untuk setiap deteksi
     for record in history_records:
         hasil_diagnosa = record.hasil_diagnosa  # Sesuaikan dengan struktur data Anda
-        for index, penyakit in enumerate(names):
-            if penyakit in hasil_diagnosa:  # Sesuaikan dengan cara Anda menyimpan data penyakit
+        for index, deteksi in enumerate(names):
+            if deteksi in hasil_diagnosa:  # Sesuaikan dengan cara Anda menyimpan data deteksi
                 jml_kasus[index] += 1
             else:
                 jml_kasus[1] += 1
 
-    return render_template('admin/penyakit_terbanyak.html', names=names, jml_kasus=jml_kasus)
-# Setelah proses penghitungan selesai, data dihitung kemudian dikirim ke template HTML penyakit_terbanyak.html menggunakan fungsi render_template.
+    return render_template('admin/deteksi_terbanyak.html', names=names, jml_kasus=jml_kasus)
+# Setelah proses penghitungan selesai, data dihitung kemudian dikirim ke template HTML deteksi_terbanyak.html menggunakan fungsi render_template.
 # Template HTML akan menerima dua variabel: names dan jml_kasus, yang kemudian dapat digunakan untuk menampilkan data di halaman web.
 
 #halaman hasil diagnosa
@@ -228,31 +228,27 @@ def admin_hasil_diagnosa(id):
     if not user_record:
         abort(404)  # Not found, data user tidak ditemukan
 
-    # Query data anak terkait
-    data_anak = DataAnak.query.filter_by(id=history_record.dataanak_id).first()
-    if not data_anak:
-        abort(404)  # Not found, data anak tidak ditemukan
+    # Query data Toko terkait
+    data_toko = DataToko.query.filter_by(id=history_record.datatoko_id).first()
+    if not data_toko:
+        abort(404)  # Not found, data Toko tidak ditemukan
     
     # Pastikan hasil_diagnosa adalah string dan ubah menjadi list
     hasil_diagnosa_str = history_record.hasil_diagnosa or ""
     hasil_diagnosa = [diagnosis.strip() for diagnosis in hasil_diagnosa_str.split(",") if diagnosis.strip()]
 
-    # Query semua rekomendasi
-    rekomendasi_records = Rekomendasi.query.all()
-    rekomendasi_list = [record.serialize() for record in rekomendasi_records]
 
-    # Gabungkan rekomendasi yang relevan dengan hasil diagnosa
+    # rekomendasi yang relevan dengan hasil diagnosa
     rekomendasi_diagnosa = {}
-    for penyakit in hasil_diagnosa:
-        for rekomendasi in rekomendasi_list:
-            if rekomendasi['nama'] == penyakit:
-                rekomendasi_diagnosa[penyakit] = rekomendasi
+    for deteksi in hasil_diagnosa:
+        print(deteksi)
+        rekomendasi_diagnosa[deteksi] = deteksi
     
     # Membuat dictionary diagnosa untuk dikirim ke template
     diagnosa = {
         'nama_user': user_record.full_name,
-        'nama_anak': data_anak.nama_anak,
-        'usia_anak': data_anak.usia_anak,
+        'nama_toko': data_toko.nama_toko,
+        'usia_toko': data_toko.usia_toko,
         'tanggal_konsultasi': history_record.tanggal_konsultasi,
         'file_deteksi': history_record.file_deteksi,
         'hasil_diagnosa': hasil_diagnosa,

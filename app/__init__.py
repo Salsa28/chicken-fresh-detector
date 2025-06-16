@@ -59,18 +59,20 @@ class User(db.Model):
     phone_number = db.Column(db.String(20), nullable=True)
     fs_uniquifier = db.Column(db.String(64), unique=True, nullable=False, default=lambda: str(uuid.uuid4()))
 
-class DataAnak(db.Model):  # Penamaan class
-    __tablename__ = 'dataanak'  # Menetapkan nama tabel secara eksplisit
+class DataToko(db.Model):  # Penamaan class
+    __tablename__ = 'datatoko'  # Menetapkan nama tabel secara eksplisit
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    nama_anak = db.Column(db.String(255), nullable=False)
-    usia_anak = db.Column(db.String(100), nullable=False)
-    jenis_kelamin = db.Column(db.String(1), nullable=False)
+    nama_toko = db.Column(db.String(255), nullable=False)
+    alamat_toko = db.Column(db.String(255), nullable=True)
+    no_telepon = db.Column(db.String(20), nullable=True)
+    usia_toko = db.Column(db.String(100), nullable=False)
+    jenis_toko = db.Column(db.String(1), nullable=False)
 
 class History(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'), nullable=False)
-    dataanak_id = db.Column(db.Integer(), db.ForeignKey('dataanak.id'), nullable=False)
+    datatoko_id = db.Column(db.Integer(), db.ForeignKey('datatoko.id'), nullable=False)
     hasil_diagnosa = db.Column(db.String(255), nullable=True)
     file_deteksi = db.Column(db.String(225), nullable=True)
     tanggal_konsultasi = db.Column(db.DateTime, default=lambda: datetime.now(timezone(timedelta(hours=7))), nullable=False)
@@ -79,14 +81,10 @@ class History(db.Model):
 class Rekomendasi(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     nama = db.Column(db.String(225), unique=True, nullable=False)
-    pengobatan = db.Column(db.Text, nullable=False)
-    link_rekomendasi = db.Column(db.String(225), nullable=True)
     def serialize(self):
         return {
             'id': self.id,
             'nama': self.nama,
-            'pengobatan': self.pengobatan,
-            'link_rekomendasi': self.link_rekomendasi
         }
 
 app.config.update(

@@ -63,27 +63,27 @@
         <h1 class="font-bold ">Hasil Diagnosa</h1>
       </div>
         <div class="col-md-4">
-            <h2 class="font-semibold">Nama Toko: {{ diagnosa.nama_anak }}</h2>
-            <p>Usia Toko : {{ diagnosa.usia_anak }} Tahun</p>
+            <h2 class="font-semibold">Nama Toko: {{ diagnosa.nama_toko }}</h2>
+            <p>Usia Toko : {{ diagnosa.usia_toko }} Tahun</p>
             <img src="{{ diagnosa.file_deteksi }}" class="w-100" alt="hasil konsultasi">
             <h4 class="font-semibold  mt-2" id="hasil_predict">
-              {% for penyakit in diagnosa.hasil_diagnosa %}
-              {% if penyakit == "sehat"%}
+              {% for deteksi in diagnosa.hasil_diagnosa %}
+              {% if deteksi == "sehat"%}
               {%  else %}
-              {{ penyakit }}
+              {{ deteksi }}
               {% endif %}
           {% endfor %}
             </h4>
         </div>
         <div class="col-md-8">
           {% set tips_shown = False %}
-          {% for penyakit in diagnosa.hasil_diagnosa %}
-            {% if penyakit != "sehat" %}
-              <h5 class="font-semibold">{{ penyakit }}</h5>
-              {% if penyakit in diagnosa.rekomendasi_diagnosa %}
+          {% for deteksi in diagnosa.hasil_diagnosa %}
+            {% if deteksi != "sehat" %}
+              <h5 class="font-semibold">{{ deteksi }}</h5>
+              {% if deteksi in diagnosa.rekomendasi_diagnosa %}
                   <p class="font-semibold">: ❌ Jangan Dimakan ‼️ berbahaya bagi pencernaan ❗</p>
               {% endif %}
-            {% elif penyakit == "sehat" and not tips_shown %}
+            {% elif deteksi == "sehat" and not tips_shown %}
             <p class="font-semibold">Aman Dikonsumsi ✅ </p>
               <a class="btn btn-custom custom-bg-warning font-semibold" href="/tips">Tips Memilih Ayam Segar</a>
               {% set tips_shown = True %}

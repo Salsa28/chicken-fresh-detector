@@ -36,11 +36,11 @@
     </div>
   </div>
 
-  <!-- Anak-anak Table -->
+  <!-- Data Toko Table -->
   <div class="mt-3">
-    <h1 class="text-center font-semibold">Data Anak</h1>
+    <h1 class="text-center font-semibold">Data Toko</h1>
     <button class="btn btn-custom-warning mb-2 custom-bg-info text-white" onclick="showModal('add')">Tambah Data</button>
-    <table id="dataAnakTable" class="table table-bordered">
+    <table id="dataTokoTable" class="table table-bordered">
       <thead>
         <tr>
           <th>No</th>
@@ -51,19 +51,19 @@
         </tr>
       </thead>
       <tbody>
-        {% for anak in data %}
+        {% for toko in data %}
         <tr>
-          <td>{{ anak.id }}</td>
-          <td>{{ anak.nama_anak }}</td>
-          <td>{{ anak.usia_anak }}</td>
-          <td>{% if anak.jenis_kelamin == L %}
+          <td>{{ toko.id }}</td>
+          <td>{{ toko.nama_toko }}</td>
+          <td>{{ toko.usia_toko }}</td>
+          <td>{% if toko.jenis_toko == L %}
 		  Mandiri
 		  {% else %}
 		  CV / PT
 		  {% endif %}</td>
           <td>
-            <button class="btn btn-custom-warning mb-2 bg-warning text-white" onclick="showModal('edit', '{{ anak.id }}', '{{ anak.nama_anak }}', '{{ anak.usia_anak }}', '{{ anak.jenis_kelamin }}')"> Edit Data </button>
-            <button class="btn btn-custom-danger mb-2 bg-danger text-white" onclick="showModal('delete', '{{ anak.id }}')"> Hapus Data </button>
+            <button class="btn btn-custom-warning mb-2 bg-warning text-white" onclick="showModal('edit', '{{ toko.id }}', '{{ toko.nama_toko }}', '{{ toko.usia_toko }}', '{{ toko.jenis_toko }}')"> Edit Data </button>
+            <button class="btn btn-custom-danger mb-2 bg-danger text-white" onclick="showModal('delete', '{{ toko.id }}')"> Hapus Data </button>
           </td>
         </tr>
         {% endfor %}
@@ -72,35 +72,35 @@
   </div>
 </div>
 <!-- Modal -->
-<div class="modal fade" id="dataAnakModal" tabindex="-1" role="dialog" aria-labelledby="dataAnakModalLabel" aria-hidden="true">
+<div class="modal fade" id="dataTokoModal" tabindex="-1" role="dialog" aria-labelledby="dataTokoModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
       <div class="modal-content">
           <div class="modal-header">
-              <h5 class="modal-title" id="dataAnakModalLabel">Modal title</h5>
+              <h5 class="modal-title" id="dataTokoModalLabel">Modal title</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
               </button>
           </div>
           <div class="modal-body">
-              <form id="dataAnakForm">
+              <form id="dataTokoForm">
                   <input type="hidden" id="data_id">
                   <div class="form-group">
-                      <label for="data_nama_anak">Nama Toko</label>
-                      <input type="text" class="form-control" id="data_nama_anak">
+                      <label for="data_nama_toko">Nama Toko</label>
+                      <input type="text" class="form-control" id="data_nama_toko">
                   </div>
                   <div class="form-group">
-                      <label for="data_usia_anak">Usia Toko (Tahun)</label>
-                      <input type="text" class="form-control" id="data_usia_anak">
+                      <label for="data_usia_toko">Usia Toko (Tahun)</label>
+                      <input type="text" class="form-control" id="data_usia_toko">
                   </div>
                   <div class="form-group">
                     <label>Jenis Toko</label>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="jenis_kelamin" id="jenis_kelamin_l" value="L">
-                        <label class="form-check-label" for="jenis_kelamin_l">Mandiri</label>
+                        <input class="form-check-input" type="radio" name="jenis_toko" id="jenis_toko_l" value="L">
+                        <label class="form-check-label" for="jenis_toko_l">Mandiri</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="jenis_kelamin" id="jenis_kelamin_p" value="P">
-                        <label class="form-check-label" for="jenis_kelamin_p">CV / PT</label>
+                        <input class="form-check-input" type="radio" name="jenis_toko" id="jenis_toko_p" value="P">
+                        <label class="form-check-label" for="jenis_toko_p">CV / PT</label>
                     </div>
                 </div>
               </form>
@@ -127,7 +127,7 @@
 });
 
   $(document).ready(function () {
-    $('#dataAnakTable').DataTable();
+    $('#dataTokoTable').DataTable();
     function adjustContentStyle() {
       const content = $('.content');
       const sidebarWidth = 250; // Width of the sidebar in pixels
@@ -193,64 +193,64 @@
         }
     });
 });
-function showModal(action, id, nama_anak, usia_anak, jenis_kelamin) {
-    const modalTitle = $('#dataAnakModalLabel');
+function showModal(action, id, nama_toko, usia_toko, jenis_toko) {
+    const modalTitle = $('#dataTokoModalLabel');
     const modalActionButton = $('#modalActionButton');
     const deleteConfirmation = $('#deleteConfirmation');
 
     // Reset form
-    $('#dataAnakForm')[0].reset();
+    $('#dataTokoForm')[0].reset();
     $('#data_id').val('');
     deleteConfirmation.hide();
 
     if (action === 'add') {
-        $("#dataAnakForm").show();
-        modalTitle.text('Tambah Data Anak');
+        $("#dataTokoForm").show();
+        modalTitle.text('Tambah Data Toko');
         modalActionButton.text('Tambah');
         modalActionButton.off('click').on('click', tambahData);
     } else if (action === 'edit') {
-        $("#dataAnakForm").show();
-        modalTitle.text('Edit Data Anak');
+        $("#dataTokoForm").show();
+        modalTitle.text('Edit Data Toko');
         modalActionButton.text('Simpan');
         $('#data_id').val(id);
-        $('#data_nama_anak').val(nama_anak || '');
-        $('#data_usia_anak').val(usia_anak || '');
-        if (jenis_kelamin === 'L') {
-            $('#jenis_kelamin_l').prop('checked', true);
-        } else if (jenis_kelamin === 'P') {
-            $('#jenis_kelamin_p').prop('checked', true);
+        $('#data_nama_toko').val(nama_toko || '');
+        $('#data_usia_toko').val(usia_toko || '');
+        if (jenis_toko === 'L') {
+            $('#jenis_toko_l').prop('checked', true);
+        } else if (jenis_toko === 'P') {
+            $('#jenis_toko_p').prop('checked', true);
         }
         modalActionButton.off('click').on('click', updateData);
     } else if (action === 'delete') {
-        modalTitle.text('Hapus Data Anak');
+        modalTitle.text('Hapus Data Toko');
         modalActionButton.text('Hapus');
         $('#data_id').val(id);
         deleteConfirmation.show();
-        $("#dataAnakForm").hide();
+        $("#dataTokoForm").hide();
         modalActionButton.off('click').on('click', deleteData);
     }
 
-    $('#dataAnakModal').modal('show');
+    $('#dataTokoModal').modal('show');
 }
 
 // Function to handle adding data
 function tambahData() {
-    const nama_anak = $('#data_nama_anak').val();
-    const usia_anak = $('#data_usia_anak').val();
-    const jenis_kelamin = $('input[name="jenis_kelamin"]:checked').val();
+    const nama_toko = $('#data_nama_toko').val();
+    const usia_toko = $('#data_usia_toko').val();
+    const jenis_toko = $('input[name="jenis_toko"]:checked').val();
 
     $.ajax({
         type: 'POST',
-        url: '/user/data_anak',  // Ganti dengan URL endpoint Anda
+        url: '/user/data_toko',  // Ganti dengan URL endpoint Anda
         contentType: 'application/json',  // Set header Content-Type
         data: JSON.stringify({ 
-            nama_anak: nama_anak,
-            usia_anak: usia_anak,
-            jenis_kelamin: jenis_kelamin,
+            nama_toko: nama_toko,
+            usia_toko: usia_toko,
+            jenis_toko: jenis_toko,
         }),
         success: function(response) {
             alert(response.msg);
-            $('#dataAnakModal').modal('hide');
+            $('#dataTokoModal').modal('hide');
             // Refresh table or take other actions
             location.reload()
         },
@@ -263,23 +263,23 @@ function tambahData() {
 // Function to handle updating data
 function updateData() {
     const id = $('#data_id').val();
-    const nama_anak = $('#data_nama_anak').val();
-    const usia_anak = $('#data_usia_anak').val();
-    const jenis_kelamin = $('input[name="jenis_kelamin"]:checked').val();
+    const nama_toko = $('#data_nama_toko').val();
+    const usia_toko = $('#data_usia_toko').val();
+    const jenis_toko = $('input[name="jenis_toko"]:checked').val();
 
     $.ajax({
         type: 'PUT',
-        url: '/user/data_anak/'+id,  // Ganti dengan URL endpoint Anda
+        url: '/user/data_toko/'+id,  // Ganti dengan URL endpoint Anda
         contentType: 'application/json',  // Set header Content-Type
         data: JSON.stringify({ 
             id: id,
-            nama_anak: nama_anak,
-            usia_anak: usia_anak,
-            jenis_kelamin: jenis_kelamin,
+            nama_toko: nama_toko,
+            usia_toko: usia_toko,
+            jenis_toko: jenis_toko,
         }),
         success: function(response) {
             alert(response.msg);
-            $('#dataAnakModal').modal('hide');
+            $('#dataTokoModal').modal('hide');
             // Refresh table or take other actions
             location.reload()
         },
@@ -295,12 +295,12 @@ function deleteData() {
 
     $.ajax({
         type: 'DELETE',
-        url: '/user/data_anak/'+id,  // Ganti dengan URL endpoint Anda
+        url: '/user/data_toko/'+id,  // Ganti dengan URL endpoint Anda
         contentType: 'application/json',  // Set header Content-Type
         data: JSON.stringify({  id: id }),
         success: function(response) {
             alert(response.msg);
-            $('#dataAnakModal').modal('hide');
+            $('#dataTokoModal').modal('hide');
             // Refresh table or take other actions
             location.reload()
         },

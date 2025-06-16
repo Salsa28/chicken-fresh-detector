@@ -146,7 +146,7 @@
     </div>
     <ul class="nav flex-column text-start pl-3">
       <li class="nav-item">
-        <a class="nav-link " href="/admin/penyakit_terbanyak"><img src="../static/icon/icon_bar_chart.svg" height="25" width="25" alt="icon_ganti_password">  Deteksi Terbanyak</a>
+        <a class="nav-link " href="/admin/deteksi_terbanyak"><img src="../static/icon/icon_bar_chart.svg" height="25" width="25" alt="icon_ganti_password">  Deteksi Terbanyak</a>
       </li>
       <li class="nav-item">
         <a class="nav-link " href="/keluar"><img src="../static/icon/logout.svg" height="25" width="25" alt="icon_keluar">  Keluar</a>
@@ -268,17 +268,17 @@
     </script>
 {% endif %}
 <!-- jika satu diagram saja palinh banyak -->
-<!-- var index = 0; // Ganti ini dengan indeks penyakit yang ingin Anda tampilkan
+<!-- var index = 0; // Ganti ini dengan indeks deteksi yang ingin Anda tampilkan
 var selectedLabel = labels[index];
 var selectedData = data[index];
 
 var myChart = new Chart(ctx, {
   type: 'bar',
   data: {
-    labels: [selectedLabel], // Label penyakit yang dipilih
+    labels: [selectedLabel], // Label deteksi yang dipilih
     datasets: [{
       label: 'Jumlah Kasus',
-      data: [selectedData], // Data untuk penyakit yang dipilih
+      data: [selectedData], // Data untuk deteksi yang dipilih
       backgroundColor: 'rgba(255, 99, 132, 0.2)',
       borderColor: 'rgba(255, 99, 132, 1)',
       borderWidth: 1

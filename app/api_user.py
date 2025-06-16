@@ -1,4 +1,4 @@
-from . import app,mysql,db,History,Rekomendasi,User,bcrypt,login_role_required, DataAnak
+from . import app,mysql,db,History,Rekomendasi,User,bcrypt,login_role_required, DataToko
 from flask import render_template, request, jsonify, redirect, url_for,session,g,abort
 import pandas as pd
 from PIL import Image
@@ -48,48 +48,48 @@ def detail_tips(link):
 @app.route('/user/dashboard')
 @login_role_required('user')
 def dashboarduser():
-    data_anak = DataAnak.query.filter_by(user_id=session['id']).all()
-    print(data_anak)
-    # Cek jika data anak kosong
-    if not data_anak:
+    data_toko = DataToko.query.filter_by(user_id=session['id']).all()
+    print(data_toko)
+    # Cek jika data toko kosong
+    if not data_toko:
         return redirect(url_for("profile"))
     # Check if all required fields are filled
     if not all([session.get('username'),session.get('full_name'),session.get('email')]):
         return redirect(url_for("profile"))
     else:
-        return render_template('user/dashboard.html',data = data_anak)
-#halaman crud data anak
-@app.route('/user/data_anak', methods=['POST'])
+        return render_template('user/dashboard.html',data = data_toko)
+#halaman crud data toko
+@app.route('/user/data_toko', methods=['POST'])
 @login_role_required('user')
-def create_data_anak():
+def create_data_toko():
     data = request.get_json()
     
     # Debugging purpose
     print(data)
     
-    nama_anak = data.get('nama_anak')
-    usia_anak = data.get('usia_anak')
-    jenis_kelamin = data.get('jenis_kelamin')
+    nama_toko = data.get('nama_toko')
+    usia_toko = data.get('usia_toko')
+    jenis_toko = data.get('jenis_toko')
 
     try:
         # Validasi input
-        if not nama_anak or not usia_anak or jenis_kelamin not in ['L', 'P']:
+        if not nama_toko or not usia_toko or jenis_toko not in ['L', 'P']:
             return jsonify({"msg": "Invalid data"}), 400
-        cek_nama_anak = DataAnak.query.filter_by(user_id=session["id"]).all()
-        print(cek_nama_anak)
-        for anak in cek_nama_anak :
-            print(anak.nama_anak)
-            print(nama_anak)
-            if anak.nama_anak == nama_anak:
+        cek_nama_toko = DataToko.query.filter_by(user_id=session["id"]).all()
+        print(cek_nama_toko)
+        for toko in cek_nama_toko :
+            print(toko.nama_toko)
+            print(nama_toko)
+            if toko.nama_toko == nama_toko:
                 return jsonify({"msg":"maaf nama toko tidak boleh sama "})
-        # Membuat instance DataAnak
-        data_anak = DataAnak(
+        # Membuat instance DataToko
+        data_toko = DataToko(
             user_id=session['id'],
-            nama_anak=nama_anak,
-            usia_anak=usia_anak,
-            jenis_kelamin=jenis_kelamin
+            nama_toko=nama_toko,
+            usia_toko=usia_toko,
+            jenis_toko=jenis_toko
         )
-        db.session.add(data_anak)
+        db.session.add(data_toko)
         db.session.commit()
 
         return jsonify({"msg": "Data Toko berhasil ditambahkan"}), 201
@@ -100,22 +100,22 @@ def create_data_anak():
         print(f"Error: {str(e)}")
         return jsonify({"msg": "Something went wrong, please try again later."}), 500
 
-@app.route('/user/data_anak/<int:id>', methods=['PUT'])
+@app.route('/user/data_toko/<int:id>', methods=['PUT'])
 @login_role_required('user')
-def update_data_anak(id):
+def update_data_toko(id):
     try:
-        data_anak = DataAnak.query.filter_by(id=id, user_id=session['id']).first()
+        data_toko = DataToko.query.filter_by(id=id, user_id=session['id']).first()
         data = request.get_json()
-        if not data_anak:
+        if not data_toko:
             return jsonify({"msg": "Data Toko tidak ditemukan"}), 404
 
-        nama_anak = data['nama_anak']
-        usia_anak = data['usia_anak']
-        jenis_kelamin = data.get('jenis_kelamin')
+        nama_toko = data['nama_toko']
+        usia_toko = data['usia_toko']
+        jenis_toko = data.get('jenis_toko')
 
-        data_anak.nama_anak = nama_anak
-        data_anak.usia_anak = usia_anak
-        data_anak.jenis_kelamin = jenis_kelamin
+        data_toko.nama_toko = nama_toko
+        data_toko.usia_toko = usia_toko
+        data_toko.jenis_toko = jenis_toko
 
         db.session.commit()
 
@@ -124,16 +124,16 @@ def update_data_anak(id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"msg": f"Error: {str(e)}"}), 400
-@app.route('/user/data_anak/<int:id>', methods=['DELETE'])
+@app.route('/user/data_toko/<int:id>', methods=['DELETE'])
 @login_role_required('user')
-def delete_data_anak(id):
+def delete_data_toko(id):
     try:
-        data_anak = DataAnak.query.filter_by(id=id, user_id=session['id']).first()
+        data_toko = DataToko.query.filter_by(id=id, user_id=session['id']).first()
         
-        if not data_anak:
+        if not data_toko:
             return jsonify({"msg": "Data Toko tidak ditemukan"}), 404
 
-        db.session.delete(data_anak)
+        db.session.delete(data_toko)
         db.session.commit()
 
         return jsonify({"msg": "Data Toko berhasil dihapus"}), 200
@@ -146,8 +146,8 @@ def delete_data_anak(id):
 @app.route('/user/profile')
 @login_role_required('user')
 def profile():
-    anak_anak = DataAnak.query.filter_by(user_id=session['id']).all()
-    data = [{"id": anak.id, "nama_anak": anak.nama_anak, "usia_anak": anak.usia_anak, "jenis_kelamin": anak.jenis_kelamin} for anak in anak_anak]
+    data_toko = DataToko.query.filter_by(user_id=session['id']).all()
+    data = [{"id": toko.id, "nama_toko": toko.nama_toko, "usia_toko": toko.usia_toko, "jenis_toko": toko.jenis_toko} for toko in data_toko]
     return render_template('user/profile.html',data=data)
 
 @app.route('/user/update_profile', methods=['POST'])
@@ -184,9 +184,9 @@ def update_profile():
         session['full_name'] = user.full_name
         session['address'] = user.address
         session['email'] = user.email
-        data_anak = DataAnak.query.filter_by(user_id=session['id']).all()
-        # Cek jika data anak kosong
-        if not data_anak:
+        data_toko = DataToko.query.filter_by(user_id=session['id']).all()
+        # Cek jika data toko kosong
+        if not data_toko:
             return jsonify({"msg": "Minimal tambahkan Data Toko 1 sebelum melanjutkan"}), 400
 
         # Check if all required fields are filled
@@ -260,22 +260,18 @@ def user_hasil_diagnosa(id):
 
     # Gabungkan rekomendasi yang relevan dengan hasil diagnosa
     rekomendasi_diagnosa = {}
-    for penyakit in hasil_diagnosa:
+    for deteksi in hasil_diagnosa:
         for rekomendasi in rekomendasi_list:
-            if rekomendasi['nama'] == penyakit:
-                rekomendasi_diagnosa[penyakit] = rekomendasi
-                print(rekomendasi['link_rekomendasi'])
-                link_rekomendasi = rekomendasi['link_rekomendasi']
-                link_rekomendasi = link_rekomendasi.split(",")
-                rekomendasi_diagnosa[penyakit]['link_rekomendasi'] = link_rekomendasi
+            if rekomendasi['nama'] == deteksi:
+                rekomendasi_diagnosa[deteksi] = rekomendasi
     print(rekomendasi_diagnosa)
     # Query semua rekomendasi
     user = User.query.filter_by(id=history_record.user_id).first()
-    data_anak = DataAnak.query.filter_by(id=history_record.dataanak_id).first()
+    data_toko = DataToko.query.filter_by(id=history_record.datatoko_id).first()
     diagnosa = {
         'nama_user': user.full_name,
-        'nama_anak': data_anak.nama_anak,
-        'usia_anak': data_anak.usia_anak,
+        'nama_toko': data_toko.nama_toko,
+        'usia_toko': data_toko.usia_toko,
         'tanggal_konsultasi': history_record.tanggal_konsultasi,
         'file_deteksi': history_record.file_deteksi,
         'hasil_diagnosa': hasil_diagnosa,
@@ -327,16 +323,16 @@ def user_history_konsultasi():
             query = query.filter(extract('year', History.tanggal_konsultasi) == filter_year)
     
     # Aliased untuk tabel-tabel yang ingin di-join
-    data_anak_alias = aliased(DataAnak)
+    data_toko_alias = aliased(DataToko)
     user_alias = aliased(User)
 
     if filter_anything:
-        query = query.join(data_anak_alias, History.dataanak_id == data_anak_alias.id)\
+        query = query.join(data_toko_alias, History.datatoko_id == data_toko_alias.id)\
                     .join(user_alias, History.user_id == user_alias.id)\
                     .filter(
             db.or_(
-                data_anak_alias.nama_anak.ilike(f'%{filter_anything}%'),
-                data_anak_alias.usia_anak.ilike(f'%{filter_anything}%'),
+                data_toko_alias.nama_toko.ilike(f'%{filter_anything}%'),
+                data_toko_alias.usia_toko.ilike(f'%{filter_anything}%'),
                 History.tanggal_konsultasi.ilike(f'%{filter_anything}%'),
                 History.hasil_diagnosa.ilike(f'%{filter_anything}%'),
                 user_alias.full_name.ilike(f'%{filter_anything}%')
@@ -347,12 +343,12 @@ def user_history_konsultasi():
     diagnosa_records = []
 
     for history_record in histori_records:
-        data_anak = DataAnak.query.filter_by(id=history_record.dataanak_id).first()
+        data_toko = DataToko.query.filter_by(id=history_record.datatoko_id).first()
         diagnosa = {
             'id': history_record.id,
             'nama_user': session["full_name"],
-            'nama_anak': data_anak.nama_anak if data_anak else "Data Toko Tidak Ditemukan",
-            'usia_anak': data_anak.usia_anak if data_anak else "N/A",
+            'nama_toko': data_toko.nama_toko if data_toko else "Data Toko Tidak Ditemukan",
+            'usia_toko': data_toko.usia_toko if data_toko else "N/A",
             'tanggal_konsultasi': history_record.tanggal_konsultasi.strftime('%Y-%m-%d'),
             'hasil_diagnosa': history_record.hasil_diagnosa,
         }

@@ -75,7 +75,7 @@ def predict():
             print(detected_names_str)
             history = History(
                 user_id = session['id'],
-                dataanak_id = request.form["id_anak"],
+                datatoko_id = request.form["id_toko"],
                 tanggal_konsultasi=current_time,
                 file_deteksi=detected_file_path,
                 hasil_diagnosa=detected_names_str
@@ -88,7 +88,7 @@ def predict():
         else:
             history = History(
                 user_id = session['id'],
-                dataanak_id = request.form["id_anak"],
+                datatoko_id = request.form["id_toko"],
                 tanggal_konsultasi=current_time,
                 file_deteksi=detected_file_path,
                 hasil_diagnosa="tidak terdeteksi"
@@ -162,7 +162,7 @@ def predict_mtcnn():
                 print(found_names)
                 history = History(
                     user_id = session['id'],
-                    dataanak_id = request.form["id_anak"],
+                    datatoko_id = request.form["id_toko"],
                     tanggal_konsultasi=current_time,
                     file_deteksi=detected_file_path,
                     hasil_diagnosa=found_names
@@ -175,7 +175,7 @@ def predict_mtcnn():
             else:
                 history = History(
                     user_id = session['id'],
-                    dataanak_id = request.form["id_anak"],
+                    datatoko_id = request.form["id_toko"],
                     tanggal_konsultasi=current_time,
                     file_deteksi=detected_file_path,
                     hasil_diagnosa="sehat"

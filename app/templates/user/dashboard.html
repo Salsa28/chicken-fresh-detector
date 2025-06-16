@@ -48,15 +48,15 @@
     </section>
 </div>
 
-<div class="modal fade" id="dataAnakModal" tabindex="-1" role="dialog" aria-labelledby="dataAnakModalLabel" aria-hidden="true">
+<div class="modal fade" id="dataTokoModal" tabindex="-1" role="dialog" aria-labelledby="dataTokoModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="dataAnakModalLabel">Pilih Data Toko</h5>
+                <h5 class="modal-title" id="dataTokoModalLabel">Pilih Data Toko</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
-                <table id="dataAnakTable" class="table table-bordered">
+                <table id="dataTokoTable" class="table table-bordered">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -67,18 +67,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for anak in data %}
+                        {% for toko in data %}
                         <tr>
-                            <td>{{ anak.id }}</td>
-                            <td>{{ anak.nama_anak }}</td>
-                            <td>{{ anak.usia_anak }}</td>
-                            <td>{% if anak.jenis_kelamin == L %}
+                            <td>{{ toko.id }}</td>
+                            <td>{{ toko.nama_toko }}</td>
+                            <td>{{ toko.usia_toko }}</td>
+                            <td>{% if toko.jenis_toko == L %}
 		  Mandiri
 		  {% else %}
 		  CV / PT
 		  {% endif %}</td>
                             <td>
-                                <button class="btn btn-success pilih-anak" data-id="{{ anak.id }}">Pilih</button>
+                                <button class="btn btn-success pilih-toko" data-id="{{ toko.id }}">Pilih</button>
                             </td>
                         </tr>
                         {% endfor %}
@@ -97,7 +97,7 @@
         const $sidebar = $('.sidebar');
         const $mainContent = $('#mainContent');
         const $FormGambar = $('#FormGambar');
-        const $dataAnakTable = $('#dataAnakTable');
+        const $dataTokoTable = $('#dataTokoTable');
         const video = $('#video')[0];
         const canvas = $('#canvas')[0];
         const context = canvas.getContext('2d');
@@ -115,9 +115,9 @@
             }
         }
 
-        function openDataAnakModal(blob) {
+        function openDataTokoModal(blob) {
             selectedImageBlob = blob;
-            $('#dataAnakModal').modal('show');
+            $('#dataTokoModal').modal('show');
         }
 
         adjustContentStyle();
@@ -129,7 +129,7 @@
             adjustContentStyle();
         });
 
-        $dataAnakTable.DataTable();
+        $dataTokoTable.DataTable();
 
         $('#cameraModal').on('shown.bs.modal', function () {
             navigator.mediaDevices.getUserMedia({ video: true }).then(function (stream) {
@@ -148,7 +148,7 @@
 
         $('#upload').click(function () {
             $(this).text("Loading...").prop("disabled", true);
-            canvas.toBlob(blob => openDataAnakModal(blob), 'image/png');
+            canvas.toBlob(blob => openDataTokoModal(blob), 'image/png');
         });
 
         $('#cek_hasil').click(function () {
@@ -156,17 +156,17 @@
                 alert('Please upload a file or take a photo first.');
                 return;
             }
-            openDataAnakModal($FormGambar[0].files[0]);
+            openDataTokoModal($FormGambar[0].files[0]);
         });
 
-        $dataAnakTable.on('click', '.pilih-anak', function () {
+        $dataTokoTable.on('click', '.pilih-toko', function () {
             const $button = $(this);
             $button.text('Loading...').prop("disabled", true);
 
             if (selectedImageBlob) {
                 const formData = new FormData();
                 formData.append('gambar', selectedImageBlob, 'photo.png');
-                formData.append('id_anak', $button.data('id'));
+                formData.append('id_toko', $button.data('id'));
 
                 $.ajax({
                     type: 'POST',
@@ -189,7 +189,7 @@
             }
         });
 
-        $('#dataAnakModal').on('hidden.bs.modal', function () {
+        $('#dataTokoModal').on('hidden.bs.modal', function () {
             location.reload();
         });
 
