@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, request, session, render_template, send_from_directory, abort, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from flask_mysqldb import MySQL
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 from flask_mail import Mail
@@ -10,10 +9,6 @@ from functools import wraps
 import os,uuid
 
 app = Flask(__name__)
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'deteksi_yolov8'
 
 project_directory = os.path.abspath(os.path.dirname(__file__))
 upload_folder = os.path.join(project_directory, 'static', 'upload')
@@ -21,7 +16,7 @@ detect_folder = os.path.join(project_directory, 'static', 'detect')
 app.config['UPLOAD_FOLDER'] = upload_folder 
 app.config['PROJECT_FOLDER'] = project_directory 
 app.config['DETECT_FOLDER'] = detect_folder 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root@localhost/deteksi_yolov8'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/deteksi_yolov8'
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'bukan rahasia')
 app.config['SECURITY_PASSWORD_HASH'] = 'bcrypt'
 app.config['SECURITY_PASSWORD_SALT'] = os.getenv('SECURITY_PASSWORD_SALT', b'asahdjhwquoyo192382qo')
@@ -98,8 +93,6 @@ app.config.update(
 mail = Mail(app)
 s = URLSafeTimedSerializer(app.config['JWT_SECRET_KEY'])
 jwt = JWTManager(app)
-mysql = MySQL()
-mysql.init_app(app)
 
 # Allow CORS
 from flask_cors import CORS

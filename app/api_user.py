@@ -1,7 +1,5 @@
-from . import app,mysql,db,History,Rekomendasi,User,bcrypt,login_role_required, DataToko
+from . import app,db,History,Rekomendasi,User,bcrypt,login_role_required, DataToko
 from flask import render_template, request, jsonify, redirect, url_for,session,g,abort
-import pandas as pd
-from PIL import Image
 from io import BytesIO
 import os,textwrap, locale, json, uuid, time,re
 from datetime import datetime
@@ -11,25 +9,6 @@ from sqlalchemy import extract
 from datetime import datetime
 from sqlalchemy.orm import aliased
 
-@app.before_request
-def before_request():
-    g.con = mysql.connection.cursor()
-@app.teardown_request
-def teardown_request(exception):
-    if hasattr(g, 'con'):
-        g.con.close()
-        
-def fetch_data_and_format(query):
-    g.con.execute(query)
-    data = g.con.fetchall()
-    column_names = [desc[0] for desc in g.con.description]
-    info_list = [dict(zip(column_names, row)) for row in data]
-    return info_list
-def fetch_years(query):
-    g.con.execute(query)
-    data_thn = g.con.fetchall()
-    thn = [{'tahun': str(sistem[0])} for sistem in data_thn]
-    return thn
 #halaman homepage
 @app.route('/')
 def index():
@@ -37,13 +16,8 @@ def index():
 #halaman tips
 @app.route('/tips')
 def userberita():
-    # tips = fetch_data_and_format("SELECT * FROM tips order by id DESC")
+    # tips = Berita.query.all()
     return render_template('tips.html')
-@app.route('/tips/<link>')
-def detail_tips(link):
-    query = "SELECT * FROM berita where link = '"+ str(link) +"' order by id DESC "
-    berita = fetch_data_and_format(query)
-    return render_template('detail_berita.html',info_list = berita)
 #halaman dashboard user
 @app.route('/user/dashboard')
 @login_role_required('user')

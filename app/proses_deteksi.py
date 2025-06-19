@@ -1,9 +1,4 @@
-import os
-import uuid
-import torch
-import datetime
-import subprocess
-import json
+
 from flask import Flask, jsonify, request, session
 from . import app,db,History
 from PIL import Image

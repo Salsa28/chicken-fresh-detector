@@ -1,88 +1,13 @@
-from . import app,mysql,db,allowed_file, History,Rekomendasi,login_role_required,DataToko,User
+from . import app, db,allowed_file, History,Rekomendasi,login_role_required,DataToko,User
 from flask import render_template, request, jsonify, redirect, url_for,session,g,abort,flash
 import os,textwrap, locale, json, uuid, time,re
-import pandas as pd
-from PIL import Image
 from io import BytesIO
 from datetime import datetime
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import func
 from sqlalchemy import extract
 from sqlalchemy.orm import aliased
-
-@app.before_request
-def before_request():
-    g.con = mysql.connection.cursor()
-@app.teardown_request
-def teardown_request(exception):
-    if hasattr(g, 'con'):
-        g.con.close()
-        
-def do_image(do, table, id):
-    try:
-        if do == "delete":
-            filename = get_image_filename(table, id)
-            delete_image(filename)
-            return True
-        file = request.files['gambar']
-        if file is None or file.filename == '':
-            return "default.jpg"
-        else:
-            filename = get_image_filename(table, id)
-            delete_image(filename)
-            return resize_and_save_image(file, table, id)
-    except KeyError:
-        if do == "edit":
-            if table =="galeri":
-                return True
-            reset = request.form['reset']
-            print(reset)
-            if reset=="true":
-                g.con.execute(f"UPDATE {table} SET gambar = %s WHERE id = %s", ("default.jpg", id))
-                mysql.connection.commit()
-        return "default.jpg"# Tangkap kesalahan jika kunci 'gambar' tidak ada dalam request.files
-    except FileNotFoundError:
-        pass  # atau return "File tidak ditemukan."
-    except Exception as e:
-        print(str(e))
-        return str(e)
-
-def resize_and_save_image(file, table=None, id=None):
-    img = Image.open(file).convert('RGB').resize((600, 300))
-    img_io = BytesIO()
-    img.save(img_io, 'JPEG', quality=70)
-    img_io.seek(0)
-    random_name = uuid.uuid4().hex + ".jpg"
-    destination = os.path.join(app.config['UPLOAD_FOLDER'], random_name)
-    img.save(destination)
-    if table and id:
-        g.con.execute(f"UPDATE {table} SET gambar = %s WHERE id = %s", (random_name, id))
-        mysql.connection.commit()
-        return True
-    else:
-        return random_name
-def get_image_filename(table, id):
-    g.con.execute(f"SELECT gambar FROM {table} WHERE id = %s", (id,))
-    result = g.con.fetchone()
-    if result == "default.jpg":
-        return None
-    return result[0] if result else None
-
-def delete_image(filename):
-    if filename == "default.jpg":
-        return True
-    if filename:
-        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        if os.path.exists(image_path):
-            os.remove(image_path)
-            
-def fetch_data_and_format(query):
-    g.con.execute(query)
-    data = g.con.fetchall()
-    column_names = [desc[0] for desc in g.con.description]
-    info_list = [dict(zip(column_names, row)) for row in data]
-    return info_list
-            
+  
 #halaman admin
 @app.route('/admin/dashboard')
 @login_role_required('admin')
