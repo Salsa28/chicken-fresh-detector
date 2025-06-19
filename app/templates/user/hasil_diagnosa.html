@@ -76,20 +76,26 @@
             </h4>
         </div>
         <div class="col-md-8">
-          {% set tips_shown = False %}
-          {% for deteksi in diagnosa.hasil_diagnosa %}
-            {% if deteksi != "sehat" %}
-              <h5 class="font-semibold">{{ deteksi }}</h5>
-              {% if deteksi in diagnosa.rekomendasi_diagnosa %}
-                  <p class="font-semibold">: ❌ Jangan Dimakan ‼️ berbahaya bagi pencernaan ❗</p>
-              {% endif %}
-            {% elif deteksi == "sehat" and not tips_shown %}
-            <p class="font-semibold">Aman Dikonsumsi ✅ </p>
-              <a class="btn btn-custom custom-bg-warning font-semibold" href="/tips">Tips Memilih Ayam Segar</a>
-              {% set tips_shown = True %}
-            {% endif %}
-          {% endfor %}
-         
+		{% set status = namespace(ada_tiren=False) %}
+
+		{% for deteksi in diagnosa.hasil_diagnosa %}
+		  {% if deteksi|lower|trim == "ayam tiren" %}
+			{% set status.ada_tiren = True %}
+		  {% endif %}
+		{% endfor %}
+
+		{% if status.ada_tiren %}
+		  <h5 class="font-semibold text-red-600">Ayam Tiren</h5>
+		  <p class="font-semibold text-red-500">❌ Jangan Dimakan ‼️ Berbahaya bagi pencernaan ❗</p>
+		{% else %}
+		  <h5 class="font-semibold text-green-600">Ayam Segar</h5>
+		  <p class="font-semibold text-green-500">✅ Aman Dikonsumsi</p>
+		{% endif %}
+
+		<a class="btn btn-custom custom-bg-warning font-semibold mt-4 block" href="/tips">
+		  Tips Memilih Ayam Segar
+		</a>
+
         <br>
         </div>
     </div>
