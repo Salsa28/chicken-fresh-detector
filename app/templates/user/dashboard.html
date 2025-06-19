@@ -179,6 +179,7 @@
                         window.location.href = data.msg === "SUKSES" ? `/user/hasil_diagnosa/${data.id_hasil}` : "/user/dashboard";
                     },
                     error: function (xhr) {
+						console.log(xhr.responseJSON)
                         const errorMsg = xhr.responseJSON?.msg || "Terjadi kesalahan pada Server";
                         alert(errorMsg);
                         window.location.href = "/user/dashboard";
