@@ -3,6 +3,7 @@ from flask import Flask, jsonify, request, session
 from . import app,db,History
 from PIL import Image
 from io import BytesIO
+import os
 # Load the model
 project_directory = os.path.abspath(os.path.dirname(__file__))
 model_path = os.path.join(project_directory, 'best.pt')
@@ -55,7 +56,7 @@ def predict():
                     detected_names.append(class_name)
 
         detected_names_str = ",".join(set(detected_names)) if detected_names else ""
-        
+        print(detected_names_str)
         current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         # Cari folder predict terbaru di dalam save_path
