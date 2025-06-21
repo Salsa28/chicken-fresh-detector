@@ -75,7 +75,7 @@ def predict():
             print(detected_names_str)
             history = History(
                 user_id = session['id'],
-                datatoko_id = request.form["id_toko"],
+                #datatoko_id = request.form["id_toko"],
                 tanggal_konsultasi=current_time,
                 file_deteksi=detected_file_path,
                 hasil_diagnosa=detected_names_str
@@ -88,7 +88,7 @@ def predict():
         else:
             history = History(
                 user_id = session['id'],
-                datatoko_id = request.form["id_toko"],
+                #datatoko_id = request.form["id_toko"],
                 tanggal_konsultasi=current_time,
                 file_deteksi=detected_file_path,
                 hasil_diagnosa="tidak terdeteksi"

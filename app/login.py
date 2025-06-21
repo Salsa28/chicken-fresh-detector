@@ -44,10 +44,10 @@ def login():
             session['email'] = user.email
             session['phone_number'] = user.phone_number
             print(session)
-            if user.full_name == "" or user.email == "" or user.phone_number == "":
-                return jsonify(access_token=access_token, redirect_url=url_for('profile'))
-            else:
-                return jsonify(access_token=access_token, redirect_url=url_for('dashboarduser'))
+            # if user.full_name == "" or user.email == "" or user.phone_number == "":
+            #     return jsonify(access_token=access_token, redirect_url=url_for('profile'))
+            # else:
+            return jsonify(access_token=access_token, redirect_url=url_for('dashboarduser'))
 
     return render_template('user/login.html')
 # Endpoint yang memerlukan autentikasi

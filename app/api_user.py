@@ -22,16 +22,17 @@ def userberita():
 @app.route('/user/dashboard')
 @login_role_required('user')
 def dashboarduser():
-    data_toko = DataToko.query.filter_by(user_id=session['id']).all()
-    print(data_toko)
+    #data_toko = DataToko.query.filter_by(user_id=session['id']).all()
+    #print(data_toko)
     # Cek jika data toko kosong
-    if not data_toko:
-        return redirect(url_for("profile"))
+    # if not data_toko:
+    #     return redirect(url_for("profile"))
     # Check if all required fields are filled
     if not all([session.get('username'),session.get('full_name'),session.get('email')]):
         return redirect(url_for("profile"))
     else:
-        return render_template('user/dashboard.html',data = data_toko)
+        #return render_template('user/dashboard.html',data = data_toko)
+        return render_template('user/dashboard.html')
 #halaman crud data toko
 @app.route('/user/data_toko', methods=['POST'])
 @login_role_required('user')
@@ -241,11 +242,11 @@ def user_hasil_diagnosa(id):
     print(rekomendasi_diagnosa)
     # Query semua rekomendasi
     user = User.query.filter_by(id=history_record.user_id).first()
-    data_toko = DataToko.query.filter_by(id=history_record.datatoko_id).first()
+    #data_toko = DataToko.query.filter_by(id=history_record.datatoko_id).first()
     diagnosa = {
         'nama_user': user.full_name,
-        'nama_toko': data_toko.nama_toko,
-        'usia_toko': data_toko.usia_toko,
+        # 'nama_toko': data_toko.nama_toko,
+        # 'usia_toko': data_toko.usia_toko,
         'tanggal_konsultasi': history_record.tanggal_konsultasi,
         'file_deteksi': history_record.file_deteksi,
         'hasil_diagnosa': hasil_diagnosa,

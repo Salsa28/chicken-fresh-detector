@@ -57,7 +57,7 @@ class User(db.Model):
 class DataToko(db.Model):  # Penamaan class
     __tablename__ = 'datatoko'  # Menetapkan nama tabel secara eksplisit
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     nama_toko = db.Column(db.String(255), nullable=False)
     alamat_toko = db.Column(db.String(255), nullable=True)
     no_telepon = db.Column(db.String(20), nullable=True)
@@ -67,7 +67,7 @@ class DataToko(db.Model):  # Penamaan class
 class History(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'), nullable=False)
-    datatoko_id = db.Column(db.Integer(), db.ForeignKey('datatoko.id'), nullable=False)
+    datatoko_id = db.Column(db.Integer(), db.ForeignKey('datatoko.id'), nullable=True)
     hasil_diagnosa = db.Column(db.String(255), nullable=True)
     file_deteksi = db.Column(db.String(225), nullable=True)
     tanggal_konsultasi = db.Column(db.DateTime, default=lambda: datetime.now(timezone(timedelta(hours=7))), nullable=False)

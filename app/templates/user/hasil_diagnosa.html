@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EyeKids</title>
+  <title>Deteksi Ayam Tiren</title>
   <!-- Link to Google Fonts Raleway -->
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -50,7 +50,7 @@
    <!-- Topbar -->
    <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand d-flex " href="/user/dashboard">
-        <h3 class="custom-text-info font-semibold">Eye</h3><p class="custom-text-warning font-semibold">kids</p>
+        <h3 class="custom-text-info font-semibold">Deteksi</h3><p class="custom-text-warning font-semibold">Ayam Tiren</p>
     </a>
     <div></div>
     <div></div>
@@ -63,8 +63,8 @@
         <h1 class="font-bold ">Hasil Diagnosa</h1>
       </div>
         <div class="col-md-4">
-            <h2 class="font-semibold">Nama Toko: {{ diagnosa.nama_toko }}</h2>
-            <p>Usia Toko : {{ diagnosa.usia_toko }} Tahun</p>
+            <!--<h2 class="font-semibold">Nama Toko: {{ diagnosa.nama_toko }}</h2>
+             <p>Usia Toko : {{ diagnosa.usia_toko }} Tahun</p> -->
             <img src="{{ diagnosa.file_deteksi }}" class="w-100" alt="hasil konsultasi">
             <h4 class="font-semibold  mt-2" id="hasil_predict">
               {% for deteksi in diagnosa.hasil_diagnosa %}
@@ -77,19 +77,25 @@
         </div>
         <div class="col-md-8">
 		{% set status = namespace(ada_tiren=False) %}
+		{% set status = namespace(ada_segar=False) %}
 
 		{% for deteksi in diagnosa.hasil_diagnosa %}
 		  {% if deteksi|lower|trim == "ayam tiren" %}
 			{% set status.ada_tiren = True %}
+		  {% elif deteksi|lower|trim == "ayam segar" %}
+			{% set status.ada_segar = True %}
 		  {% endif %}
 		{% endfor %}
 
 		{% if status.ada_tiren %}
 		  <h5 class="font-semibold text-red-600">Ayam Tiren</h5>
 		  <p class="font-semibold text-red-500">❌ Jangan Dimakan ‼️ Berbahaya bagi pencernaan ❗</p>
-		{% else %}
+		{% elif status.ada_segar %}
 		  <h5 class="font-semibold text-green-600">Ayam Segar</h5>
 		  <p class="font-semibold text-green-500">✅ Aman Dikonsumsi</p>
+    {% else %}
+		  <h5 class="font-semibold text-green-600">Tidak Terdeteksi</h5>
+		  <p class="font-semibold text-green-500">Unknown Foreign Object</p>
 		{% endif %}
 
 		<a class="btn btn-custom custom-bg-warning font-semibold mt-4 block" href="/tips">

@@ -154,9 +154,9 @@ def admin_hasil_diagnosa(id):
         abort(404)  # Not found, data user tidak ditemukan
 
     # Query data Toko terkait
-    data_toko = DataToko.query.filter_by(id=history_record.datatoko_id).first()
-    if not data_toko:
-        abort(404)  # Not found, data Toko tidak ditemukan
+    # data_toko = DataToko.query.filter_by(id=history_record.datatoko_id).first()
+    # if not data_toko:
+    #     abort(404)  # Not found, data Toko tidak ditemukan
     
     # Pastikan hasil_diagnosa adalah string dan ubah menjadi list
     hasil_diagnosa_str = history_record.hasil_diagnosa or ""
@@ -172,8 +172,8 @@ def admin_hasil_diagnosa(id):
     # Membuat dictionary diagnosa untuk dikirim ke template
     diagnosa = {
         'nama_user': user_record.full_name,
-        'nama_toko': data_toko.nama_toko,
-        'usia_toko': data_toko.usia_toko,
+        # 'nama_toko': data_toko.nama_toko,
+        # 'usia_toko': data_toko.usia_toko,
         'tanggal_konsultasi': history_record.tanggal_konsultasi,
         'file_deteksi': history_record.file_deteksi,
         'hasil_diagnosa': hasil_diagnosa,
