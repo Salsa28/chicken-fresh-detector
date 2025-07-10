@@ -22,8 +22,8 @@
             </div>
 
             <div class="col-md-6 mb-3 text-center">
-                <img src="../static/icon/hasil_diagnosa.svg" alt="Hasil Diagnosa" class="img-responsive img">
-                <p class="font-semibold mt-1">Hasil Diagnosa</p>
+                <img src="../static/icon/hasil_diagnosa.svg" alt="Hasil Deteksi" class="img-responsive img">
+                <p class="font-semibold mt-1">Hasil Deteksi</p>
                 <button id="cek_hasil"
                         class="btn btn-custom custom-bg-warning w-100 text-white font-semibold">Lihat Hasil</button>
             </div>
@@ -135,7 +135,7 @@
                 success: function (data) {
                     alert("Status: " + (data.msg === "SUKSES" ? "Sukses" : data.msg));
                     window.location.href = data.msg === "SUKSES"
-                        ? `/user/hasil_diagnosa/${data.id_hasil}`
+                        ? `/user/hasil_deteksi/${data.id_hasil}`
                         : "/user/dashboard";
                 },
                 error: function (xhr) {

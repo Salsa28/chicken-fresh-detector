@@ -76,9 +76,9 @@ def predict():
             history = History(
                 user_id = session['id'],
                 #datatoko_id = request.form["id_toko"],
-                tanggal_konsultasi=current_time,
+                tanggal_deteksi=current_time,
                 file_deteksi=detected_file_path,
-                hasil_diagnosa=detected_names_str
+                hasil_deteksi=detected_names_str
             )
             db.session.add(history)
             db.session.commit()
@@ -89,9 +89,9 @@ def predict():
             history = History(
                 user_id = session['id'],
                 #datatoko_id = request.form["id_toko"],
-                tanggal_konsultasi=current_time,
+                tanggal_deteksi=current_time,
                 file_deteksi=detected_file_path,
-                hasil_diagnosa="tidak terdeteksi"
+                hasil_deteksi="tidak terdeteksi"
             )
             db.session.add(history)
             db.session.commit()

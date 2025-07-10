@@ -106,10 +106,10 @@
       border-radius: 60px;
     }
     .custom-bg-info {
-      background-color: #1F4590;
+      background-color: #B22222;
     }
     .custom-text-info {
-      color: #1F4590;
+      color: #B22222;
     }
     .custom-bg-warning {
       background-color: #FFA451;
@@ -135,7 +135,7 @@
     .custom-border-size {
       height: 4px;
       border: none;
-      background-color: #1F4590;
+      background-color: #B22222;
     }
     .nav-link {
       color: #ffa451 !important;
@@ -211,7 +211,7 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="d-flex baseline">
       <a class="navbar-brand d-flex baseline" href="/admin/dashboard">
-        <h3 class="custom-text-info font-semibold">Deteksi</h3><p class="custom-text-warning font-semibold"></p>
+        <h3 class="custom-text-info font-semibold">EKukuruyuk</h3><p class="custom-text-warning font-semibold"></p>
       </a>
       <!-- Toggle Button -->
       <div class="toggle-btn">
@@ -231,7 +231,7 @@
         <a class="nav-link" href="/admin/dashboard"><img src="../static/icon/jadwal.svg" height="25" width="25" alt="icon_dashboard"> Dashboard</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/admin/history_konsultasi"><img src="../static/icon/history_konsultasi.svg" height="25" width="25" alt="icon_history_konsultasi"> History Deteksi</a>
+        <a class="nav-link" href="/admin/history_deteksi"><img src="../static/icon/history_konsultasi.svg" height="25" width="25" alt="icon_history_konsultasi"> History Deteksi</a>
       </li>
     </ul>
     <div>
@@ -264,14 +264,14 @@
       <div class="row">
         <div class="col-md-12 mb-3 text-center align-center">
           <div class="text-center d-flex baseline">
-            <h1 class="font-bold custom-text-info mr-3">List Table History Diagnosa</h1>
+            <h1 class="font-bold custom-text-info mr-3">List Table History Deteksi</h1>
             <img src="../static/icon/table.svg" height="25" width="25" alt="icon_table">
           </div>
           <div class="mt-2 mb-4">
             <form id="filterForm" method="GET">
               <div class="form-row d-flex">
                           <div class="col-lg-1">
-                              <a href="{{ url_for('history_konsultasi') }}" class="btn w-100 btn-secondary">Reset</a>
+                              <a href="{{ url_for('history_deteksi') }}" class="btn w-100 btn-secondary">Reset</a>
                           </div>
                           <div class="col-lg-2">
                               <input type="text" class="w-100 form-control" id="filteranything" name="filteranything" placeholder="Search" value="{% if request.args.get('filteranything') %}{{ request.args.get('filteranything') }}{% endif %}">
@@ -317,10 +317,9 @@
                 <tr>
                   <th>Nama</th>
                   <th>Nama Toko</th>
-                  <th>Usia Toko</th>
-                  <th>Tanggal Diagnosa</th>
-                  <th>Hasil Diagnosa</th>
-                  <th>Aksi</th>
+                  <th>Tanggal Deteksi</th>
+                  <th>Hasil Deteksi</th>
+                  <th>Edit</th>
                 </tr>
               </thead>
               <tbody>
@@ -328,12 +327,11 @@
                 <tr>
                   <td>{{ i.nama_user }}</td>
                   <td>{{ i.nama_toko }}</td>
-                  <td>{{ i.usia_toko }}</td>
-                  <td>{{ i.tanggal_konsultasi  }}</td>
-                  <td>{{ i.hasil_diagnosa }}</td>
+                  <td>{{ i.tanggal_deteksi  }}</td>
+                  <td>{{ i.hasil_deteksi }}</td>
                   <td>
-                    <button class="btn btn-custom-info mb-2 bg-info text-white" onclick="window.open('/admin/history_konsultasi/{{ i.id }}', '_blank');">Detail</button>
-                    <button class="btn btn-custom-warning mb-2 bg-warning text-white" onclick="showModal('edit', '{{ i.id }}','{{ i.nama_user }}', '{{ i.nama_toko }}', '{{ i.usia_toko }}', '{{ i.tanggal_konsultasi }}', '{{ i.hasil_diagnosa }}')"> Edit Data </button>
+                    <button class="btn btn-custom-info mb-2 bg-info text-white" onclick="window.open('/admin/history_deteksi/{{ i.id }}', '_blank');">Detail</button>
+                    <button class="btn btn-custom-warning mb-2 bg-warning text-white" onclick="showModal('edit', '{{ i.id }}','{{ i.nama_user }}', '{{ i.nama_toko }}', '{{ i.tanggal_deteksi }}', '{{ i.hasil_deteksi }}')"> Edit Data </button>
                     <button class="btn btn-custom-danger mb-2 bg-danger text-white" onclick="showModal('delete', '{{ i.id }}')"> Hapus Data </button>
                   </td>
                 </tr>
@@ -359,24 +357,20 @@
               <form id="dataHistoryForm">
                   <input type="hidden" id="data_id">
                   <div class="form-group">
-                    <label for="data_nama_toko">Nama Ortu</label>
-                    <input type="text" class="form-control" id="data_nama_ortu">
+                    <label for="data_nama_toko">Nama </label>
+                    <input type="text" class="form-control" id="data_nama">
                 </div>
                   <div class="form-group">
                       <label for="data_nama_toko">Nama Toko</label>
                       <input type="text" class="form-control" id="data_nama_toko">
                   </div>
                   <div class="form-group">
-                      <label for="data_usia_toko">Usia Toko</label>
-                      <input type="text" class="form-control" id="data_usia_toko">
-                  </div>
-                  <div class="form-group">
-                    <label for="tanggal_konsultasi">Tanggal Konsultasi</label>
-                    <input type="date" class="form-control" id="tanggal_konsultasi">
+                    <label for="tanggal_deteksi">Tanggal Deteksi</label>
+                    <input type="date" class="form-control" id="tanggal_deteksi">
                 </div>
                 <div class="form-group">
-                  <label for="hasil_diagnosa">Hasil Diagnosa</label>
-                  <input type="text" class="form-control" id="hasil_diagnosa">
+                  <label for="hasil_deteksi">Hasil Deteksi</label>
+                  <input type="text" class="form-control" id="hasil_deteksi">
               </div>
               </form>
               <div id="deleteConfirmation" style="display: none;">
@@ -442,7 +436,7 @@
       document.getElementById('mainContent').classList.toggle('collapsed');
     });
     
-function showModal(action, id, nama_ortu, nama_toko, usia_toko, tanggal_konsultasi,hasil_diagnosa) {
+function showModal(action, id, nama, nama_toko, tanggal_deteksi,hasil_deteksi) {
     const modalTitle = $('#dataHistoryModalLabel');
     const modalActionButton = $('#modalActionButton');
     const deleteConfirmation = $('#deleteConfirmation');
@@ -457,11 +451,10 @@ function showModal(action, id, nama_ortu, nama_toko, usia_toko, tanggal_konsulta
         modalTitle.text('Edit Data Toko');
         modalActionButton.text('Simpan');
         $('#data_id').val(id);
-        $('#data_nama_ortu').val(nama_ortu || '');
+        $('#data_nama').val(nama || '');
         $('#data_nama_toko').val(nama_toko || '');
-        $('#data_usia_toko').val(usia_toko || '');
-        $('#tanggal_konsultasi').val(tanggal_konsultasi || '');
-        $('#hasil_diagnosa').val(hasil_diagnosa || '');
+        $('#tanggal_deteksi').val(tanggal_deteksi || '');
+        $('#hasil_deteksi').val(hasil_deteksi || '');
         
         modalActionButton.off('click').on('click', updateData);
     } else if (action === 'delete') {
@@ -479,23 +472,21 @@ function showModal(action, id, nama_ortu, nama_toko, usia_toko, tanggal_konsulta
 // Function to handle updating data
 function updateData() {
     const id = $('#data_id').val();
-    const nama_ortu = $('#data_nama_ortu').val();
+    const nama = $('#data_nama').val();
     const nama_toko = $('#data_nama_toko').val();
-    const usia_toko = $('#data_usia_toko').val();
-    const tanggal_konsultasi = $('#tanggal_konsultasi').val();
-    const hasil_diagnosa = $('#hasil_diagnosa').val();
-    console.log(hasil_diagnosa)
+    const tanggal_deteksi = $('#tanggal_deteksi').val();
+    const hasil_deteksi = $('#hasil_deteksi').val();
+    console.log(hasil_deteksi)
     $.ajax({
         type: 'PUT',
-        url: '/admin/history_konsultasi/'+id,  // Ganti dengan URL endpoint Anda
+        url: '/admin/history_deteksi/'+id,  // Ganti dengan URL endpoint Anda
         contentType: 'application/json',  // Set header Content-Type
         data: JSON.stringify({ 
             id: id,
-            nama_ortu:nama_ortu,
+            nama:nama,
             nama_toko: nama_toko,
-            usia_toko: usia_toko,
-            tanggal_konsultasi: tanggal_konsultasi,
-            hasil_diagnosa:hasil_diagnosa
+            tanggal_deteksi: tanggal_deteksi,
+            hasil_deteksi:hasil_deteksi
         }),
         success: function(response) {
             alert(response.msg);
@@ -515,7 +506,7 @@ function deleteData() {
 
     $.ajax({
         type: 'DELETE',
-        url: '/admin/history_konsultasi/'+id+"/delete",  // Ganti dengan URL endpoint Anda
+        url: '/admin/history_deteksi/'+id+"/delete",  // Ganti dengan URL endpoint Anda
         contentType: 'application/json',  // Set header Content-Type
         data: JSON.stringify({  id: id }),
         success: function(response) {

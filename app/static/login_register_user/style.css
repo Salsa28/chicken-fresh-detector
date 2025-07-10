@@ -21,7 +21,7 @@ html,body{
 .wrapper{
   overflow: hidden;
   max-width: 390px;
-  background: #1F4590;
+  background: #B22222;
   padding: 30px;
   border-radius: 15px;
   box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
@@ -62,7 +62,7 @@ html,body{
   transition: all 0.6s ease;
 }
 .slide-controls label.signup{
-  color: #1F4590;
+  color: #B22222;
 }
 .slide-controls .slider-tab{
   position: absolute;
@@ -124,7 +124,7 @@ input[type="radio"]{
   transition: all 0.3s ease;
 }
 .form-inner form .field input:focus{
-  border-color: #1a75ff;
+  border-color: #B22222;
   /* box-shadow: inset 0 0 3px #fb6aae; */
 }
 .form-inner form .field input::placeholder{
@@ -132,7 +132,7 @@ input[type="radio"]{
   transition: all 0.3s ease;
 }
 form .field input:focus::placeholder{
-  color: #1a75ff;
+  color: #B22222;
 }
 .form-inner form .pass-link{
   margin-top: 5px;

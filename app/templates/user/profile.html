@@ -45,9 +45,8 @@
         <tr>
           <th>No</th>
           <th>Nama Toko</th>
-          <th>Usia Toko</th>
           <th>Jenis Toko</th>
-          <th>aksi</th>
+          <th>Edit</th>
         </tr>
       </thead>
       <tbody>
@@ -55,14 +54,13 @@
         <tr>
           <td>{{ toko.id }}</td>
           <td>{{ toko.nama_toko }}</td>
-          <td>{{ toko.usia_toko }}</td>
           <td>{% if toko.jenis_toko == L %}
-		  Mandiri
+		  Grosir
 		  {% else %}
-		  CV / PT
+		  Kios / UMKM
 		  {% endif %}</td>
           <td>
-            <button class="btn btn-custom-warning mb-2 bg-warning text-white" onclick="showModal('edit', '{{ toko.id }}', '{{ toko.nama_toko }}', '{{ toko.usia_toko }}', '{{ toko.jenis_toko }}')"> Edit Data </button>
+            <button class="btn btn-custom-warning mb-2 bg-warning text-white" onclick="showModal('edit', '{{ toko.id }}', '{{ toko.nama_toko }}', '{{ toko.jenis_toko }}')"> Edit Data </button>
             <button class="btn btn-custom-danger mb-2 bg-danger text-white" onclick="showModal('delete', '{{ toko.id }}')"> Hapus Data </button>
           </td>
         </tr>
@@ -89,18 +87,14 @@
                       <input type="text" class="form-control" id="data_nama_toko">
                   </div>
                   <div class="form-group">
-                      <label for="data_usia_toko">Usia Toko (Tahun)</label>
-                      <input type="text" class="form-control" id="data_usia_toko">
-                  </div>
-                  <div class="form-group">
                     <label>Jenis Toko</label>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="jenis_toko" id="jenis_toko_l" value="L">
-                        <label class="form-check-label" for="jenis_toko_l">Mandiri</label>
+                        <label class="form-check-label" for="jenis_toko_l">Grosir</label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="jenis_toko" id="jenis_toko_p" value="P">
-                        <label class="form-check-label" for="jenis_toko_p">CV / PT</label>
+                        <label class="form-check-label" for="jenis_toko_p">Kios / UMKM</label>
                     </div>
                 </div>
               </form>
@@ -214,7 +208,6 @@ function showModal(action, id, nama_toko, usia_toko, jenis_toko) {
         modalActionButton.text('Simpan');
         $('#data_id').val(id);
         $('#data_nama_toko').val(nama_toko || '');
-        $('#data_usia_toko').val(usia_toko || '');
         if (jenis_toko === 'L') {
             $('#jenis_toko_l').prop('checked', true);
         } else if (jenis_toko === 'P') {
@@ -236,7 +229,6 @@ function showModal(action, id, nama_toko, usia_toko, jenis_toko) {
 // Function to handle adding data
 function tambahData() {
     const nama_toko = $('#data_nama_toko').val();
-    const usia_toko = $('#data_usia_toko').val();
     const jenis_toko = $('input[name="jenis_toko"]:checked').val();
 
     $.ajax({
@@ -245,7 +237,6 @@ function tambahData() {
         contentType: 'application/json',  // Set header Content-Type
         data: JSON.stringify({ 
             nama_toko: nama_toko,
-            usia_toko: usia_toko,
             jenis_toko: jenis_toko,
         }),
         success: function(response) {
@@ -264,7 +255,6 @@ function tambahData() {
 function updateData() {
     const id = $('#data_id').val();
     const nama_toko = $('#data_nama_toko').val();
-    const usia_toko = $('#data_usia_toko').val();
     const jenis_toko = $('input[name="jenis_toko"]:checked').val();
 
     $.ajax({
@@ -274,7 +264,6 @@ function updateData() {
         data: JSON.stringify({ 
             id: id,
             nama_toko: nama_toko,
-            usia_toko: usia_toko,
             jenis_toko: jenis_toko,
         }),
         success: function(response) {

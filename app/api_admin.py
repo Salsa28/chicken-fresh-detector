@@ -14,9 +14,9 @@ from sqlalchemy.orm import aliased
 def dashboardadmin():
     return render_template('admin/dashboard.html')
 #halaman history konsultasi
-@app.route('/admin/history_konsultasi')
+@app.route('/admin/history_deteksi')
 @login_role_required('admin')
-def history_konsultasi():
+def history_deteksi():
     filter_date = request.args.get('filterDate')
     filter_month = request.args.get('filterMonth')
     filter_year = request.args.get('filterYear')
@@ -46,14 +46,14 @@ def history_konsultasi():
     query = History.query
 
     if filter_complete_date:
-        query = query.filter(func.date(History.tanggal_konsultasi) == filter_complete_date)
+        query = query.filter(func.date(History.tanggal_deteksi) == filter_complete_date)
     else:
         if filter_date:
-            query = query.filter(extract('day', History.tanggal_konsultasi) == filter_date)
+            query = query.filter(extract('day', History.tanggal_deteksi) == filter_date)
         if filter_month:
-            query = query.filter(extract('month', History.tanggal_konsultasi) == filter_month)
+            query = query.filter(extract('month', History.tanggal_deteksi) == filter_month)
         if filter_year:
-            query = query.filter(extract('year', History.tanggal_konsultasi) == filter_year)
+            query = query.filter(extract('year', History.tanggal_deteksi) == filter_year)
     
     # Aliased untuk tabel-tabel yang ingin di-join
     data_toko_alias = aliased(DataToko)
@@ -65,49 +65,47 @@ def history_konsultasi():
                     .filter(
             db.or_(
                 data_toko_alias.nama_toko.ilike(f'%{filter_anything}%'),
-                data_toko_alias.usia_toko.ilike(f'%{filter_anything}%'),
-                History.tanggal_konsultasi.ilike(f'%{filter_anything}%'),
-                History.hasil_diagnosa.ilike(f'%{filter_anything}%'),
+                History.tanggal_deteksi.ilike(f'%{filter_anything}%'),
+                History.hasil_deteksi.ilike(f'%{filter_anything}%'),
                 user_alias.full_name.ilike(f'%{filter_anything}%')
             )
         )
     
     histori_records = query.all()
-    diagnosa_records = []
+    deteksi_records = []
 
     for history_record in histori_records:
         data_toko = DataToko.query.filter_by(id=history_record.datatoko_id).first()
         user = User.query.filter_by(id = history_record.user_id).first()
-        diagnosa = {
+        deteksi = {
             'id': history_record.id,
             'nama_user': user.full_name,
             'nama_toko': data_toko.nama_toko if data_toko else "Data Toko Tidak Ditemukan",
-            'usia_toko': data_toko.usia_toko if data_toko else "N/A",
-            'tanggal_konsultasi': history_record.tanggal_konsultasi.strftime('%Y-%m-%d'),
-            'hasil_diagnosa': history_record.hasil_diagnosa,
+            'tanggal_deteksi': history_record.tanggal_deteksi.strftime('%Y-%m-%d'),
+            'hasil_deteksi': history_record.hasil_deteksi,
         }
-        diagnosa_records.append(diagnosa)
+        deteksi_records.append(deteksi)
     
-    return render_template('admin/history_konsultasi.html', histori_records=diagnosa_records, years=years, months=months)
+    return render_template('admin/history_deteksi.html', histori_records=deteksi_records, years=years, months=months)
 
-@app.route('/admin/history_konsultasi/<int:id>', methods=['PUT'])
+@app.route('/admin/history_deteksi/<int:id>', methods=['PUT'])
 @login_role_required('admin')
-def detail_history_konsultasi(id):
+def detail_history_deteksi(id):
     history_record = History.query.get_or_404(id)
     data = request.get_json()
 
     # Update fields with data from JSON request
-    history_record.tanggal_konsultasi = data.get('tanggal_konsultasi')
-    history_record.hasil_diagnosa = data.get('hasil_diagnosa')
+    history_record.tanggal_deteksi = data.get('tanggal_deteksi')
+    history_record.hasil_deteksi = data.get('hasil_deteksi')
 
     db.session.commit()
 
     # Return JSON response
     return jsonify({'msg': 'History updated successfully!'})
 
-@app.route('/admin/history_konsultasi/<int:id>/delete', methods=['DELETE'])
+@app.route('/admin/history_deteksi/<int:id>/delete', methods=['DELETE'])
 @login_role_required('admin')
-def delete_history_konsultasi(id):
+def delete_history_deteksi(id):
     history_record = History.query.get_or_404(id)
     db.session.delete(history_record)
     db.session.commit()
@@ -128,9 +126,9 @@ def deteksi_terbanyak():
 
     # Hitung jumlah kasus untuk setiap deteksi
     for record in history_records:
-        hasil_diagnosa = record.hasil_diagnosa  # Sesuaikan dengan struktur data Anda
+        hasil_deteksi = record.hasil_deteksi  # Sesuaikan dengan struktur data Anda
         for index, deteksi in enumerate(names):
-            if deteksi in hasil_diagnosa:  # Sesuaikan dengan cara Anda menyimpan data deteksi
+            if deteksi in hasil_deteksi:  # Sesuaikan dengan cara Anda menyimpan data deteksi
                 jml_kasus[index] += 1
             else:
                 jml_kasus[1] += 1
@@ -139,10 +137,10 @@ def deteksi_terbanyak():
 # Setelah proses penghitungan selesai, data dihitung kemudian dikirim ke template HTML deteksi_terbanyak.html menggunakan fungsi render_template.
 # Template HTML akan menerima dua variabel: names dan jml_kasus, yang kemudian dapat digunakan untuk menampilkan data di halaman web.
 
-#halaman hasil diagnosa
+#halaman hasil deteksi
 @app.route('/admin/history_konsultasi/<id>')
 @login_role_required('admin')
-def admin_hasil_diagnosa(id):
+def admin_hasil_deteksi(id):
     # Query data history berdasarkan id
     history_record = History.query.filter_by(id=id).first()
     if not history_record:
@@ -158,28 +156,27 @@ def admin_hasil_diagnosa(id):
     # if not data_toko:
     #     abort(404)  # Not found, data Toko tidak ditemukan
     
-    # Pastikan hasil_diagnosa adalah string dan ubah menjadi list
-    hasil_diagnosa_str = history_record.hasil_diagnosa or ""
-    hasil_diagnosa = [diagnosis.strip() for diagnosis in hasil_diagnosa_str.split(",") if diagnosis.strip()]
+    # Pastikan hasil_deteksi adalah string dan ubah menjadi list
+    hasil_deteksi_str = history_record.hasil_deteksi or ""
+    hasil_deteksi = [deteksi.strip() for deteksi in hasil_deteksi_str.split(",") if deteksi.strip()]
 
 
-    # rekomendasi yang relevan dengan hasil diagnosa
-    rekomendasi_diagnosa = {}
-    for deteksi in hasil_diagnosa:
+    # rekomendasi yang relevan dengan hasil deteksi
+    rekomendasi_deteksi = {}
+    for deteksi in hasil_deteksi:
         print(deteksi)
-        rekomendasi_diagnosa[deteksi] = deteksi
+        rekomendasi_deteksi[deteksi] = deteksi
     
     # Membuat dictionary diagnosa untuk dikirim ke template
-    diagnosa = {
+    deteksi = {
         'nama_user': user_record.full_name,
         # 'nama_toko': data_toko.nama_toko,
-        # 'usia_toko': data_toko.usia_toko,
-        'tanggal_konsultasi': history_record.tanggal_konsultasi,
+        'tanggal_deteksi': history_record.tanggal_deteksi,
         'file_deteksi': history_record.file_deteksi,
-        'hasil_diagnosa': hasil_diagnosa,
-        'rekomendasi_diagnosa': rekomendasi_diagnosa,
+        'hasil_deteksi': hasil_deteksi,
+        'rekomendasi_deteksi': rekomendasi_deteksi,
     }
 
     # Kirim data ke template untuk ditampilkan
-    return render_template('user/hasil_diagnosa.html', diagnosa=diagnosa)
+    return render_template('user/hasil_deteksi.html', deteksi=deteksi)
 

@@ -48,7 +48,7 @@ if __name__ == '__main__':
         admin_user = User.query.filter_by(username='admin').first()
         if not admin_user:
             hashed_password = bcrypt.generate_password_hash("admin123").decode('utf-8')
-            admin_user = User(username="admin", password=hashed_password, verify_email=True,full_name="adminnn",email="admin@gmail.com",phone_number="08123456789")
+            admin_user = User(username="admin", password=hashed_password, verify_email=True,full_name="adminnn",email="admin@gmail.com",phone_number="0895383225221")
             admin_user.roles.append(admin_role)
             db.session.add(admin_user)
             db.session.commit()
@@ -57,11 +57,11 @@ if __name__ == '__main__':
         regular_user = User.query.filter_by(username='user').first()
         if not regular_user:
             hashed_password = bcrypt.generate_password_hash("user123").decode('utf-8')
-            regular_user = User(username="user", password=hashed_password, verify_email=True,full_name="userrr",email="user@gmail.com",phone_number="08123456789")
+            regular_user = User(username="user", password=hashed_password, verify_email=True,full_name="userrr",email="user@gmail.com",phone_number="0895383225221")
             regular_user.roles.append(user_role)
             db.session.add(regular_user)
             db.session.commit()
- 
+
         
     app.run(host="0.0.0.0", debug=True, port=4040)
 

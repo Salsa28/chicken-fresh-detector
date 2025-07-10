@@ -48,7 +48,7 @@
                   <form id="filterForm" method="GET">
                     <div class="form-row d-flex">
                                 <div class="col-lg-1">
-                                    <a href="{{ url_for('user_history_konsultasi') }}" class="btn w-100 btn-secondary">Reset</a>
+                                    <a href="{{ url_for('user_history_deteksi') }}" class="btn w-100 btn-secondary">Reset</a>
                                 </div>
                                 <div class="col-lg-2">
                                     <input type="text" class="w-100 form-control" id="filteranything" name="filteranything" placeholder="Search" value="{% if request.args.get('filteranything') %}{{ request.args.get('filteranything') }}{% endif %}">
@@ -95,12 +95,11 @@
                     <table class="table table-bordered" id="data-table">
                         <thead>
                             <tr>
-                                <th>Nama Pemilik Toko</th>
+                                <th>Nama</th>
                                 <th>Nama Toko</th>
-                                <th>Usia Toko</th>
-                                <th>Tanggal Diagnosa</th>
-                                <th>Hasil Diagnosa</th>
-                                <th>Aksi</th>
+                                <th>Tanggal Deteksi</th>
+                                <th>Hasil Deteksi</th>
+                                <th>Edit</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -108,11 +107,10 @@
                             <tr>
                                 <td>{{ session["full_name"] }}</td>
                                 <td>{{ i.nama_toko }}</td>
-                                <td>{{ i.usia_toko }}</td>
-                                <td>{{ i.tanggal_konsultasi }}</td>
-                                <td>{{ i.hasil_diagnosa }}</td>
+                                <td>{{ i.tanggal_deteksi }}</td>
+                                <td>{{ i.hasil_deteksi }}</td>
                                 <td>
-                                    <button class="btn btn-info btn-sm" onclick="window.open('/user/hasil_diagnosa/{{ i.id }}', '_blank');">Detail</button>
+                                    <button class="btn btn-info btn-sm" onclick="window.open('/user/hasil_deteksi/{{ i.id }}', '_blank');">Detail</button>
                                 </td>
                             </tr>
                             {% endfor %}

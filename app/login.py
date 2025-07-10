@@ -170,15 +170,15 @@ def register_user():
         
         hubungi dukungan jika Anda memiliki pertanyaan.
         
-        Untuk bantuan lebih lanjut, silakan hubungi tim dukungan kami di developer zulfanisa0103@gmail.com .
+        Untuk bantuan lebih lanjut, silakan hubungi tim dukungan kami di developer kukuruyukcare@gmail.com .
         
         Salam Hangat,
         
-        Admin
+        kukuruyukcare
     ''', username=username,  conf_email_url=conf_email_url)
 
     msg = Message('Confirmasi Email Anda',
-                  sender='zulfanisa0103@gmail.com', recipients=[email])
+                  sender='kukuruyukcare@gmail.com', recipients=[email])
 
     msg.body = email_body
     mail.send(msg)
@@ -247,15 +247,15 @@ def verif_email():
             
             hubungi dukungan jika Anda memiliki pertanyaan.
             
-            Untuk bantuan lebih lanjut, silakan hubungi tim dukungan kami di developer zulfanisa0103@gmail.com .
+            Untuk bantuan lebih lanjut, silakan hubungi tim dukungan kami di developer kukuruyukcare@gmail.com .
             
             Salam Hangat,
             
-            Pejuang D4
+            kukuruyukcare
         ''', username=user.username,  conf_email_url=conf_email_url)
 
         msg = Message('Confirmasi Email Anda',
-                    sender='zulfanisa0103@gmail.com', recipients=[email])
+                    sender='kukuruyukcare@gmail.com', recipients=[email])
 
         msg.body = email_body
         mail.send(msg)
@@ -294,15 +294,15 @@ def forgot_password():
             
             Jika Anda tidak meminta pengaturan ulang kata sandi, abaikan email ini atau hubungi dukungan jika Anda memiliki pertanyaan.
             
-            Untuk bantuan lebih lanjut, silakan hubungi tim dukungan kami di developer zulfanisa0103@gmail.com .
+            Untuk bantuan lebih lanjut, silakan hubungi tim dukungan kami di developer kukuruyukcare@gmail.com .
             
             Salam Hangat,
             
-            Mriki_Project
+            kukuruyukcare
         ''', user=user,  reset_password_url=reset_password_url)
 
         msg = Message('Reset Kata Sandi Anda',
-                    sender='zulfanisa0103@gmail.com ', recipients=[email])
+                    sender='kukuruyukcare@gmail.com ', recipients=[email])
 
         msg.body = email_body
         mail.send(msg)

@@ -43,12 +43,11 @@ def create_data_toko():
     print(data)
     
     nama_toko = data.get('nama_toko')
-    usia_toko = data.get('usia_toko')
     jenis_toko = data.get('jenis_toko')
 
     try:
         # Validasi input
-        if not nama_toko or not usia_toko or jenis_toko not in ['L', 'P']:
+        if not nama_toko or jenis_toko not in ['L', 'P']:
             return jsonify({"msg": "Invalid data"}), 400
         cek_nama_toko = DataToko.query.filter_by(user_id=session["id"]).all()
         print(cek_nama_toko)
@@ -61,7 +60,6 @@ def create_data_toko():
         data_toko = DataToko(
             user_id=session['id'],
             nama_toko=nama_toko,
-            usia_toko=usia_toko,
             jenis_toko=jenis_toko
         )
         db.session.add(data_toko)
@@ -85,11 +83,9 @@ def update_data_toko(id):
             return jsonify({"msg": "Data Toko tidak ditemukan"}), 404
 
         nama_toko = data['nama_toko']
-        usia_toko = data['usia_toko']
         jenis_toko = data.get('jenis_toko')
 
         data_toko.nama_toko = nama_toko
-        data_toko.usia_toko = usia_toko
         data_toko.jenis_toko = jenis_toko
 
         db.session.commit()
@@ -122,7 +118,7 @@ def delete_data_toko(id):
 @login_role_required('user')
 def profile():
     data_toko = DataToko.query.filter_by(user_id=session['id']).all()
-    data = [{"id": toko.id, "nama_toko": toko.nama_toko, "usia_toko": toko.usia_toko, "jenis_toko": toko.jenis_toko} for toko in data_toko]
+    data = [{"id": toko.id, "nama_toko": toko.nama_toko, "jenis_toko": toko.jenis_toko} for toko in data_toko]
     return render_template('user/profile.html',data=data)
 
 @app.route('/user/update_profile', methods=['POST'])
@@ -208,9 +204,9 @@ def ganti_password_post():
     else:
         return jsonify({"msg": "user tidak ditemukan"})
 
-@app.route('/user/hasil_diagnosa/<id>')
+@app.route('/user/hasil_deteksi/<id>')
 @login_role_required('user')
-def user_hasil_diagnosa(id):
+def user_hasil_deteksi(id):
     if 'full_name' not in session:
         abort(403)  # Forbidden, user tidak terautentikasi
 
@@ -219,14 +215,14 @@ def user_hasil_diagnosa(id):
     if not history_record:
         abort(404)  # Not found, data history tidak ditemukan
     
-    # Pastikan hasil_diagnosa adalah dictionary
-    hasil_diagnosa_str = history_record.hasil_diagnosa
+    # Pastikan hasil_deteksi adalah dictionary
+    hasil_deteksi_str = history_record.hasil_deteksi
 
-    hasil_diagnosa = hasil_diagnosa_str.split(",")
+    hasil_deteksi = hasil_deteksi_str.split(",")
 
-    if hasil_diagnosa[-1] == '':
-        hasil_diagnosa.pop()
-    print(hasil_diagnosa)
+    if hasil_deteksi[-1] == '':
+        hasil_deteksi.pop()
+    print(hasil_deteksi)
     # Query semua rekomendasi
     rekomendasi_records = Rekomendasi.query.all()
     print(rekomendasi_records)
@@ -234,31 +230,30 @@ def user_hasil_diagnosa(id):
     print(rekomendasi_list)
 
     # Gabungkan rekomendasi yang relevan dengan hasil diagnosa
-    rekomendasi_diagnosa = {}
-    for deteksi in hasil_diagnosa:
+    rekomendasi_deteksi = {}
+    for deteksi in hasil_deteksi:
         for rekomendasi in rekomendasi_list:
             if rekomendasi['nama'] == deteksi:
-                rekomendasi_diagnosa[deteksi] = rekomendasi
-    print(rekomendasi_diagnosa)
+                rekomendasi_deteksi[deteksi] = rekomendasi
+    print(rekomendasi_deteksi)
     # Query semua rekomendasi
     user = User.query.filter_by(id=history_record.user_id).first()
     #data_toko = DataToko.query.filter_by(id=history_record.datatoko_id).first()
-    diagnosa = {
+    deteksi = {
         'nama_user': user.full_name,
         # 'nama_toko': data_toko.nama_toko,
-        # 'usia_toko': data_toko.usia_toko,
-        'tanggal_konsultasi': history_record.tanggal_konsultasi,
+        'tanggal_deteksi': history_record.tanggal_deteksi,
         'file_deteksi': history_record.file_deteksi,
-        'hasil_diagnosa': hasil_diagnosa,
-        'rekomendasi_diagnosa': rekomendasi_diagnosa,
+        'hasil_deteksi': hasil_deteksi,
+        'rekomendasi_deteksi': rekomendasi_deteksi,
     }
-    print(diagnosa)
+    print(deteksi)
 
-    return render_template('user/hasil_diagnosa.html', diagnosa=diagnosa)
+    return render_template('user/hasil_deteksi.html', deteksi=deteksi)
 
-@app.route('/user/history_konsultasi', methods=['GET'])
+@app.route('/user/history_deteksi', methods=['GET'])
 @login_role_required('user')
-def user_history_konsultasi():
+def user_history_deteksi():
     filter_date = request.args.get('filterDate')
     filter_month = request.args.get('filterMonth')
     filter_year = request.args.get('filterYear')
@@ -288,14 +283,14 @@ def user_history_konsultasi():
     query = History.query.filter_by(user_id=session["id"])
 
     if filter_complete_date:
-        query = query.filter(func.date(History.tanggal_konsultasi) == filter_complete_date)
+        query = query.filter(func.date(History.tanggal_deteksi) == filter_complete_date)
     else:
         if filter_date:
-            query = query.filter(extract('day', History.tanggal_konsultasi) == filter_date)
+            query = query.filter(extract('day', History.tanggal_deteksi) == filter_date)
         if filter_month:
-            query = query.filter(extract('month', History.tanggal_konsultasi) == filter_month)
+            query = query.filter(extract('month', History.tanggal_deteksi) == filter_month)
         if filter_year:
-            query = query.filter(extract('year', History.tanggal_konsultasi) == filter_year)
+            query = query.filter(extract('year', History.tanggal_deteksi) == filter_year)
     
     # Aliased untuk tabel-tabel yang ingin di-join
     data_toko_alias = aliased(DataToko)
@@ -307,29 +302,27 @@ def user_history_konsultasi():
                     .filter(
             db.or_(
                 data_toko_alias.nama_toko.ilike(f'%{filter_anything}%'),
-                data_toko_alias.usia_toko.ilike(f'%{filter_anything}%'),
-                History.tanggal_konsultasi.ilike(f'%{filter_anything}%'),
-                History.hasil_diagnosa.ilike(f'%{filter_anything}%'),
+                History.tanggal_deteksi.ilike(f'%{filter_anything}%'),
+                History.hasil_deteksi.ilike(f'%{filter_anything}%'),
                 user_alias.full_name.ilike(f'%{filter_anything}%')
             )
         )
     
     histori_records = query.all()
-    diagnosa_records = []
+    deteksi_records = []
 
     for history_record in histori_records:
         data_toko = DataToko.query.filter_by(id=history_record.datatoko_id).first()
-        diagnosa = {
+        deteksi = {
             'id': history_record.id,
             'nama_user': session["full_name"],
             'nama_toko': data_toko.nama_toko if data_toko else "Data Toko Tidak Ditemukan",
-            'usia_toko': data_toko.usia_toko if data_toko else "N/A",
-            'tanggal_konsultasi': history_record.tanggal_konsultasi.strftime('%Y-%m-%d'),
-            'hasil_diagnosa': history_record.hasil_diagnosa,
+            'tanggal_deteksi': history_record.tanggal_deteksi.strftime('%Y-%m-%d'),
+            'hasil_deteksi': history_record.hasil_deteksi,
         }
-        diagnosa_records.append(diagnosa)
+        deteksi_records.append(deteksi)
     
-    return render_template('user/history_konsultasi.html', 
-                           histori_records=diagnosa_records, 
-                           years=years, 
-                           months=months)
+    return render_template('user/history_deteksi.html', 
+                        histori_records=deteksi_records, 
+                        years=years, 
+                        months=months)

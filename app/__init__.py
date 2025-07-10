@@ -16,7 +16,7 @@ detect_folder = os.path.join(project_directory, 'static', 'detect')
 app.config['UPLOAD_FOLDER'] = upload_folder 
 app.config['PROJECT_FOLDER'] = project_directory 
 app.config['DETECT_FOLDER'] = detect_folder 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/deteksi_yolov8'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/db_smart_kukuruyuk'
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'bukan rahasia')
 app.config['SECURITY_PASSWORD_HASH'] = 'bcrypt'
 app.config['SECURITY_PASSWORD_SALT'] = os.getenv('SECURITY_PASSWORD_SALT', b'asahdjhwquoyo192382qo')
@@ -59,18 +59,17 @@ class DataToko(db.Model):  # Penamaan class
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     nama_toko = db.Column(db.String(255), nullable=False)
+    jenis_toko = db.Column(db.String(1), nullable=True)
     alamat_toko = db.Column(db.String(255), nullable=True)
     no_telepon = db.Column(db.String(20), nullable=True)
-    usia_toko = db.Column(db.String(100), nullable=False)
-    jenis_toko = db.Column(db.String(1), nullable=False)
 
 class History(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'), nullable=False)
     datatoko_id = db.Column(db.Integer(), db.ForeignKey('datatoko.id'), nullable=True)
-    hasil_diagnosa = db.Column(db.String(255), nullable=True)
+    hasil_deteksi = db.Column(db.String(255), nullable=True)
     file_deteksi = db.Column(db.String(225), nullable=True)
-    tanggal_konsultasi = db.Column(db.DateTime, default=lambda: datetime.now(timezone(timedelta(hours=7))), nullable=False)
+    tanggal_deteksi = db.Column(db.DateTime, default=lambda: datetime.now(timezone(timedelta(hours=7))), nullable=False)
 
 
 class Rekomendasi(db.Model):
@@ -86,8 +85,8 @@ app.config.update(
     MAIL_SERVER='smtp.gmail.com',
     MAIL_PORT=587,
     MAIL_USE_TLS=True,
-    MAIL_USERNAME=os.getenv('MAIL_USERNAME', 'zulfanisa0103@gmail.com'),
-    MAIL_PASSWORD=os.getenv('MAIL_PASSWORD', 'gxigmkceytspavfa')
+    MAIL_USERNAME=os.getenv('MAIL_USERNAME', 'kukuruyukcare@gmail.com'),
+    MAIL_PASSWORD=os.getenv('MAIL_PASSWORD', 'vsxu tuzu geky btjp')
 )
 
 mail = Mail(app)
