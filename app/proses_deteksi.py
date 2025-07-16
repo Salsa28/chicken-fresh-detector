@@ -8,6 +8,7 @@ from flask import Flask, jsonify, request, session
 from . import app,db,History
 from PIL import Image
 from io import BytesIO
+
 # Load the model
 project_directory = os.path.abspath(os.path.dirname(__file__))
 model_path = os.path.join(project_directory, 'best.pt')
@@ -75,7 +76,7 @@ def predict():
             print(detected_names_str)
             history = History(
                 user_id = session['id'],
-                #datatoko_id = request.form["id_toko"],
+           
                 tanggal_deteksi=current_time,
                 file_deteksi=detected_file_path,
                 hasil_deteksi=detected_names_str
@@ -88,7 +89,7 @@ def predict():
         else:
             history = History(
                 user_id = session['id'],
-                #datatoko_id = request.form["id_toko"],
+               
                 tanggal_deteksi=current_time,
                 file_deteksi=detected_file_path,
                 hasil_deteksi="tidak terdeteksi"
