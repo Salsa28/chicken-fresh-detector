@@ -11,11 +11,26 @@ import os,uuid
 app = Flask(__name__)
 
 project_directory = os.path.abspath(os.path.dirname(__file__))
+
+# Define upload and detect folders
 upload_folder = os.path.join(project_directory, 'static', 'upload')
 detect_folder = os.path.join(project_directory, 'static', 'detect')
+
+# Configure app with folder paths
 app.config['UPLOAD_FOLDER'] = upload_folder 
 app.config['PROJECT_FOLDER'] = project_directory 
 app.config['DETECT_FOLDER'] = detect_folder 
+
+# --- PERBAIKAN: Tambahkan baris ini untuk membuat folder jika belum ada ---
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
+    print(f"Created UPLOAD_FOLDER: {app.config['UPLOAD_FOLDER']}")
+
+if not os.path.exists(app.config['DETECT_FOLDER']):
+    os.makedirs(app.config['DETECT_FOLDER'])
+    print(f"Created DETECT_FOLDER: {app.config['DETECT_FOLDER']}")
+# --- Akhir PERBAIKAN ---
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/db_smart_kukuruyuk'
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'bukan rahasia')
 app.config['SECURITY_PASSWORD_HASH'] = 'bcrypt'
@@ -47,30 +62,19 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False)
     verify_email = db.Column(db.Boolean(), default=False)
     roles = db.relationship('Role', secondary='user_roles',
-                            backref=db.backref('users', lazy='dynamic'))
+                             backref=db.backref('users', lazy='dynamic'))
     full_name = db.Column(db.String(255), nullable=True)
     address = db.Column(db.String(255), nullable=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     phone_number = db.Column(db.String(20), nullable=True)
     fs_uniquifier = db.Column(db.String(64), unique=True, nullable=False, default=lambda: str(uuid.uuid4()))
 
-class DataToko(db.Model):  # Penamaan class
-    __tablename__ = 'datatoko'  # Menetapkan nama tabel secara eksplisit
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    nama_toko = db.Column(db.String(255), nullable=False)
-    jenis_toko = db.Column(db.String(1), nullable=True)
-    alamat_toko = db.Column(db.String(255), nullable=True)
-    no_telepon = db.Column(db.String(20), nullable=True)
-
 class History(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'), nullable=False)
-    datatoko_id = db.Column(db.Integer(), db.ForeignKey('datatoko.id'), nullable=True)
     hasil_deteksi = db.Column(db.String(255), nullable=True)
     file_deteksi = db.Column(db.String(225), nullable=True)
     tanggal_deteksi = db.Column(db.DateTime, default=lambda: datetime.now(timezone(timedelta(hours=7))), nullable=False)
-
 
 class Rekomendasi(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
@@ -86,9 +90,7 @@ app.config.update(
     MAIL_PORT=587,
     MAIL_USE_TLS=True,
     MAIL_USERNAME=os.getenv('MAIL_USERNAME', 'kukuruyukcare@gmail.com'),
-    MAIL_PASSWORD=os.getenv('MAIL_PASSWORD', 'vsxu tuzu geky btjp')
-)
-
+    MAIL_PASSWORD=os.getenv('MAIL_PASSWORD', 'vsxu tuzu geky btjp'))
 mail = Mail(app)
 s = URLSafeTimedSerializer(app.config['JWT_SECRET_KEY'])
 jwt = JWTManager(app)
@@ -135,7 +137,6 @@ def login_role_required(required_role):
     return decorator
 
 # Rute contoh
-
 @app.route('/about')
 def about():
     return "About Page"
@@ -155,4 +156,5 @@ def first_post():
 @app.route('/blog/second-post')
 def second_post():
     return "Second Blog Post"
+
 from . import api_user, api_admin, login, proses_deteksi

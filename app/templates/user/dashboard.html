@@ -19,7 +19,6 @@
                 <p class="font-semibold mt-1">Upload Gambar Ayam</p>
                 <input id="FormGambar" name="file" type="file" accept="image/*"
                        class="btn btn-custom custom-bg-warning w-100 text-white font-semibold" />
-         
             </div>
 
             <div class="col-md-6 mb-3 text-center">
@@ -31,30 +30,108 @@
 
             <div class="col-md-12 mb-3 text-center">
                 <img src="../static/icon/upload_kamera.svg" alt="Foto Kamera" class="img-responsive img">
-                <p class="font-semibold mt-1">Foto Ayam</p>
+                <p class="font-semibold mt-1">Deteksi Ayam Real-time</p>
                 <button data-toggle="modal" data-target="#cameraModal" id="open_camera"
                         class="btn btn-custom custom-bg-warning w-100 text-white font-semibold">Buka Kamera</button>
             </div>
         </div>
 
-        <!-- Modal Kamera -->
+        <!-- Modal Kamera - Ukuran Diperkecil dan Lebih Proporsional -->
         <div class="modal fade" id="cameraModal" tabindex="-1" aria-labelledby="cameraModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg"> <!-- Kembali ke modal-lg, bukan modal-xl -->
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Ambil Foto Ayam</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+                        <h5 class="modal-title">Deteksi Ayam Real-time</h5>
+                        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
                             <span aria-hidden="true">&times;</span>
-                        </button>
+                        </button> -->
                     </div>
                     <div class="modal-body text-center">
-                        <video id="video" width="100%" height="240" autoplay></video>
-                        <button id="snap" class="btn btn-success mt-2">Ambil Foto</button>
-                        <canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
+                        <!-- Video element untuk stream kamera -->
+                        <video id="video" width="640" height="480" autoplay playsinline style="display: none;"></video>
+                        <!-- Canvas untuk capture frame - ukuran diperkecil -->
+                        <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+                        
+                        <!-- Container untuk hasil deteksi - ukuran lebih proporsional -->
+                        <div class="detection-container mb-3" style="position: relative; display: inline-block;">
+                            <img id="realtimeFeed" src="/static/image/ChatGPT Image Jun 6, 2025, 08_14_30 PM.png" 
+                                 alt="Real-time Detection Feed" 
+                                 class="img-responsive" 
+                                 style="width: 100%; max-width: 480px; height: 360px; object-fit: cover; border: 2px solid #28a745; border-radius: 8px;"/>
+                            
+                            <!-- Loading overlay -->
+                            <div id="loadingOverlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
+                                                          background: rgba(0,0,0,0.7); color: white; 
+                                                          display: flex; align-items: center; justify-content: center;
+                                                          border-radius: 8px;">
+                                <div class="text-center">
+                                    <div class="spinner-border text-light mb-2" role="status"></div>
+                                    <div>Memuat kamera...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Status dan kontrol - DIPERBAIKI UNTUK MENAMPILKAN 2 STATUS -->
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="mb-2">
+                                    <strong>Status Deteksi:</strong>
+                                </div>
+                                
+                                <!-- Container untuk multiple status badges -->
+                                <div id="statusContainer" class="mb-2">
+                                    <!-- Status utama (untuk sistem status) -->
+                                    <div id="systemStatus" class="mb-2">
+                                        <span id="realtimePredictionText" class="badge badge-secondary">Memuat kamera...</span>
+                                    </div>
+                                    
+                                    <!-- Status deteksi terpisah (hanya muncul saat ada deteksi) -->
+                                    <div id="detectionStatus" style="display: none;">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <span id="segarStatus" class="badge badge-success" style="display: none;">
+                                                    <i class="fas fa-check-circle"></i> <span id="segarCount">0</span> Ayam Sehat
+                                                </span>
+                                            </div>
+                                            <div class="col-6">
+                                                <span id="tirenStatus" class="badge badge-danger" style="display: none;">
+                                                    <i class="fas fa-exclamation-triangle"></i> <span id="tirenCount">0</span> Ayam Tiren
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Kontrol manual - Sekarang terlihat -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="btn-group mb-2" role="group">
+                                    <button id="manualDetect" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-search"></i> Deteksi Manual
+                                    </button>
+                                    <button id="pauseDetection" class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-pause"></i> Jeda
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Info tambahan -->
+                        <div class="row">
+                            <div class="col-12">
+                                <small class="text-muted">
+                                    <i class="fas fa-lightbulb"></i> 
+                                    Posisikan ayam dengan pencahayaan yang baik
+                                </small>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button id="upload" class="btn btn-primary">Gunakan Foto Ini</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            <i class="fas fa-times"></i> Tutup
+                        </button>
                     </div>
                 </div>
             </div>
@@ -62,77 +139,322 @@
     </section>
 </div>
 {% endblock %}
+
 {% block js %}
 <script>
     $(document).ready(function () {
         const $FormGambar = $('#FormGambar');
-        const video = $('#video')[0];
-        const canvas = $('#canvas')[0];
+        const video = $('#video')[0]; 
+        const canvas = $('#canvas')[0]; 
         const context = canvas.getContext('2d');
+        const $realtimeFeed = $('#realtimeFeed'); 
+        const $realtimePredictionText = $('#realtimePredictionText');
+        const $realtimeLoadingIndicator = $('#realtimeLoadingIndicator');
+        const $loadingOverlay = $('#loadingOverlay');
+        const $manualDetect = $('#manualDetect');
+        const $pauseDetection = $('#pauseDetection');
+        
+        // Elements untuk status terpisah
+        const $systemStatus = $('#systemStatus');
+        const $detectionStatus = $('#detectionStatus');
+        const $segarStatus = $('#segarStatus');
+        const $tirenStatus = $('#tirenStatus');
+        const $segarCount = $('#segarCount');
+        const $tirenCount = $('#tirenCount');
+        
         let selectedImageBlob = null;
+        let detectionIntervalId = null; 
+        let isDetectionPaused = false;
+        let isDetecting = false;
+        let cameraStream = null;
+        
+        // Interval yang optimal
+        const DETECTION_INTERVAL_MS = 2000; // 2 detik
+        
+        // Fungsi untuk update status yang menampilkan 2 jenis deteksi
+        function updateDetectionStatus(data) {
+            if (data.details && data.details.total_objects > 0) {
+                // Ada deteksi - sembunyikan status sistem, tampilkan status deteksi
+                $systemStatus.hide();
+                $detectionStatus.show();
+                
+                const segarCount = data.details.ayam_segar_count || 0;
+                const tirenCount = data.details.ayam_tiren_count || 0;
+                
+                // Update dan tampilkan status ayam sehat
+                if (segarCount > 0) {
+                    $segarCount.text(segarCount);
+                    $segarStatus.show();
+                } else {
+                    $segarStatus.hide();
+                }
+                
+                // Update dan tampilkan status ayam tiren
+                if (tirenCount > 0) {
+                    $tirenCount.text(tirenCount);
+                    $tirenStatus.show();
+                } else {
+                    $tirenStatus.hide();
+                }
+                
+            } else {
+                // Tidak ada deteksi - tampilkan status sistem, sembunyikan status deteksi
+                $detectionStatus.hide();
+                $segarStatus.hide();
+                $tirenStatus.hide();
+                $systemStatus.show();
+                
+                if (data.prediction && data.prediction.includes('tidak terdeteksi')) {
+                    $realtimePredictionText.text("Tidak ada ayam terdeteksi")
+                                          .removeClass('badge-secondary badge-success badge-danger badge-warning badge-info')
+                                          .addClass('badge-secondary');
+                } else {
+                    // Status sistem lainnya tetap menggunakan prediction text
+                    $realtimePredictionText.text(data.prediction || "Menunggu...")
+                                          .removeClass('badge-secondary badge-success badge-danger badge-warning badge-info')
+                                          .addClass('badge-info');
+                }
+            }
+        }
 
-        // Kamera menyala saat modal dibuka
+        function startRealtimeDetection() {
+            if (detectionIntervalId) {
+                clearInterval(detectionIntervalId); 
+            }
+            
+            // Mulai deteksi setelah kamera stabil
+            setTimeout(() => {
+                detectionIntervalId = setInterval(function () {
+                    if (!isDetectionPaused && !isDetecting && video.readyState === 4) {
+                        performDetection();
+                    }
+                }, DETECTION_INTERVAL_MS);
+                
+                $realtimePredictionText.text("Deteksi aktif").removeClass().addClass('badge badge-success');
+            }, 1000); // Delay 1 detik untuk stabilisasi
+        }
+
+        function stopRealtimeDetection() {
+            if (detectionIntervalId) {
+                clearInterval(detectionIntervalId);
+                detectionIntervalId = null;
+            }
+            isDetecting = false;
+            
+            // Reset ke status sistem
+            $detectionStatus.hide();
+            $segarStatus.hide();
+            $tirenStatus.hide();
+            $systemStatus.show();
+            $realtimePredictionText.text("Kamera ditutup").removeClass().addClass('badge badge-secondary');
+            
+            if ($realtimeLoadingIndicator) {
+                $realtimeLoadingIndicator.hide();
+            }
+        }
+
+        function performDetection() {
+            if (isDetecting || !video.videoWidth) return;
+            
+            isDetecting = true;
+            
+            // Set canvas size sesuai dengan video yang lebih kecil
+            canvas.width = 640;
+            canvas.height = 480;
+            
+            // Draw current video frame to canvas
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Convert canvas to blob
+            canvas.toBlob(blob => {
+                if (blob) {
+                    sendFrameForDetection(blob);
+                } else {
+                    isDetecting = false;
+                }
+            }, 'image/jpeg', 0.8);
+        }
+
+        // Manual detection button
+        $manualDetect.click(function() {
+            if (video.readyState === 4 && !isDetecting) {
+                performDetection();
+            }
+        });
+
+        // Pause/resume detection
+        $pauseDetection.click(function() {
+            isDetectionPaused = !isDetectionPaused;
+            
+            if (isDetectionPaused) {
+                $(this).html('<i class="fas fa-play"></i> Lanjut')
+                       .removeClass('btn-secondary').addClass('btn-success');
+                
+                // Reset ke status sistem saat dijeda
+                $detectionStatus.hide();
+                $segarStatus.hide();
+                $tirenStatus.hide();
+                $systemStatus.show();
+                $realtimePredictionText.text("Dijeda").removeClass().addClass('badge badge-warning');
+            } else {
+                $(this).html('<i class="fas fa-pause"></i> Jeda')
+                       .removeClass('btn-success').addClass('btn-secondary');
+                $realtimePredictionText.text("Deteksi aktif").removeClass().addClass('badge badge-success');
+            }
+        });
+
+        // Kamera menyala saat modal dibuka - LANGSUNG BUKA KAMERA
         $('#cameraModal').on('shown.bs.modal', function () {
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    video.srcObject = stream;
-                    video.play();
-                })
-                .catch(err => {
-                    console.error("Gagal mengakses kamera:", err);
-                    alert("Tidak dapat mengakses kamera. Coba browser lain atau periksa izin.");
-                });
+            console.log('Modal opened, starting camera...');
+            $loadingOverlay.show();
+            $realtimePredictionText.text("Memuat kamera...").removeClass().addClass('badge badge-warning');
+            
+            // Langsung request kamera dengan constraint yang lebih sederhana
+            navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    width: { ideal: 640 }, 
+                    height: { ideal: 480 }
+                } 
+            })
+            .then(stream => {
+                console.log('Camera stream obtained');
+                cameraStream = stream;
+                video.srcObject = stream;
+                
+                // Event listener untuk saat video siap
+                video.onloadedmetadata = function() {
+                    console.log('Video metadata loaded');
+                    video.play().then(() => {
+                        console.log('Video playing');
+                        $loadingOverlay.hide();
+                        $realtimePredictionText.text("Kamera siap").removeClass().addClass('badge badge-info');
+                        
+                        // Tunggu sebentar lalu mulai deteksi
+                        setTimeout(() => {
+                            startRealtimeDetection();
+                        }, 500);
+                    }).catch(err => {
+                        console.error('Error playing video:', err);
+                        $loadingOverlay.hide();
+                        alert('Gagal memutar video kamera');
+                    });
+                };
+                
+                // Fallback jika onloadedmetadata tidak trigger
+                setTimeout(() => {
+                    if ($loadingOverlay.is(':visible')) {
+                        console.log('Fallback: forcing video play');
+                        video.play();
+                        $loadingOverlay.hide();
+                        $realtimePredictionText.text("Kamera aktif").removeClass().addClass('badge badge-success');
+                        startRealtimeDetection();
+                    }
+                }, 3000);
+            })
+            .catch(err => {
+                console.error("Gagal mengakses kamera:", err);
+                $loadingOverlay.hide();
+                $realtimePredictionText.text("Error kamera").removeClass().addClass('badge badge-danger');
+                
+                let errorMsg = "Tidak dapat mengakses kamera. ";
+                if (err.name === 'NotAllowedError') {
+                    errorMsg += "Izin kamera ditolak. Silakan izinkan akses kamera.";
+                } else if (err.name === 'NotFoundError') {
+                    errorMsg += "Kamera tidak ditemukan.";
+                } else {
+                    errorMsg += "Periksa koneksi kamera Anda.";
+                }
+                
+                alert(errorMsg);
+                $('#cameraModal').modal('hide'); 
+            });
         });
 
         // Matikan kamera saat modal ditutup
         $('#cameraModal').on('hidden.bs.modal', function () {
-            const stream = video.srcObject;
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
+            console.log('Modal closed, stopping camera...');
+            
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => {
+                    track.stop();
+                    console.log('Camera track stopped');
+                });
                 video.srcObject = null;
+                cameraStream = null;
             }
+            
+            stopRealtimeDetection();
+            isDetectionPaused = false;
+            $pauseDetection.html('<i class="fas fa-pause"></i> Jeda')
+                           .removeClass('btn-success').addClass('btn-secondary');
+            
+            // Reset tampilan
+            $realtimeFeed.attr('src', '/placeholder.svg?height=360&width=480');
+            $loadingOverlay.hide();
         });
 
-        // Ambil gambar dari video ke canvas
-        $('#snap').click(function () {
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            $('#canvas').show();
-        });
+        // Fungsi untuk mengirim frame ke server
+        function sendFrameForDetection(blob) {
+            if ($realtimeLoadingIndicator) {
+                $realtimeLoadingIndicator.show();
+            }
 
-        // Upload foto hasil kamera langsung ke server
-        $('#upload').click(function () {
-            $(this).text("Loading...").prop("disabled", true);
-            canvas.toBlob(blob => {
-                selectedImageBlob = blob;
-                kirimGambarKeServer();
-            }, 'image/png');
-        });
+            const formData = new FormData();
+            formData.append('gambar', blob, 'camera_frame.jpg');
 
-        // Upload dari file langsung ke server
+            $.ajax({
+                type: 'POST',
+                url: '/predict_realtime', 
+                data: formData,
+                processData: false,
+                contentType: false,
+                timeout: 10000, // 10 second timeout
+                success: function (data) {
+                    // Gunakan fungsi update status yang baru
+                    updateDetectionStatus(data);
+                    
+                    if (data.image_data) {
+                        $realtimeFeed.attr('src', 'data:image/jpeg;base64,' + data.image_data);
+                    }
+                },
+                error: function (xhr) {
+                    const errorMsg = xhr.responseJSON?.msg || "Error server";
+                    
+                    // Reset ke status sistem untuk error
+                    $detectionStatus.hide();
+                    $segarStatus.hide();
+                    $tirenStatus.hide();
+                    $systemStatus.show();
+                    $realtimePredictionText.text("Error: " + errorMsg)
+                                          .removeClass().addClass('badge badge-danger');
+                    console.error("Error deteksi real-time:", xhr);
+                },
+                complete: function() {
+                    if ($realtimeLoadingIndicator) {
+                        $realtimeLoadingIndicator.hide();
+                    }
+                    isDetecting = false;
+                }
+            });
+        }
+
+        // Upload gambar logic (tetap sama)
         $('#cek_hasil').click(function () {
             if ($FormGambar[0].files.length === 0) {
                 alert('Silakan unggah gambar atau ambil foto terlebih dahulu.');
                 return;
             }
             selectedImageBlob = $FormGambar[0].files[0];
-            kirimGambarKeServer();
+            kirimGambarKeServer(selectedImageBlob); 
         });
 
-        function kirimGambarKeServer() {
-            if (!selectedImageBlob) {
-                alert('Tidak ada gambar yang dipilih.');
-                return;
-            }
-
+        function kirimGambarKeServer(blob) {
             const formData = new FormData();
-            formData.append('gambar', selectedImageBlob, 'photo.png');
-
-  
-
+            formData.append('gambar', blob, 'photo.png');
 
             $.ajax({
                 type: 'POST',
-                url: '/predict',
+                url: '/predict', 
                 data: formData,
                 processData: false,
                 contentType: false,
@@ -150,7 +472,7 @@
             });
         }
 
-        // Hilangkan flash message otomatis
+        // Auto-hide flash messages
         setTimeout(function () {
             $('#flashMessage').fadeOut('fast');
         }, 3000);

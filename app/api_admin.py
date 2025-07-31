@@ -1,4 +1,4 @@
-from . import app, db, allowed_file, History, Rekomendasi, login_role_required, DataToko, User
+from . import app, db, allowed_file, History, Rekomendasi, login_role_required, User
 from flask import render_template, request, jsonify, redirect, url_for, session, g, abort, flash
 import os, textwrap, locale, json, uuid, time, re
 from io import BytesIO
@@ -53,15 +53,13 @@ def history_deteksi():
         if filter_year:
             query = query.filter(extract('year', History.tanggal_deteksi) == filter_year)
 
-    data_toko_alias = aliased(DataToko)
+  
     user_alias = aliased(User)
 
     if filter_anything:
-        query = query.join(data_toko_alias, History.datatoko_id == data_toko_alias.id)\
-                     .join(user_alias, History.user_id == user_alias.id)\
+        query = query.join(user_alias, History.user_id == user_alias.id)\
                      .filter(
                          db.or_(
-                             data_toko_alias.nama_toko.ilike(f'%{filter_anything}%'),
                              History.tanggal_deteksi.ilike(f'%{filter_anything}%'),
                              History.hasil_deteksi.ilike(f'%{filter_anything}%'),
                              user_alias.full_name.ilike(f'%{filter_anything}%')
@@ -72,12 +70,10 @@ def history_deteksi():
     deteksi_records = []
 
     for history_record in histori_records:
-        data_toko = DataToko.query.filter_by(id=history_record.datatoko_id).first()
         user = User.query.filter_by(id=history_record.user_id).first()
         deteksi = {
             'id': history_record.id,
             'nama_user': user.full_name,
-            'nama_toko': data_toko.nama_toko if data_toko else "Data Toko Tidak Ditemukan",
             'tanggal_deteksi': history_record.tanggal_deteksi.strftime('%Y-%m-%d'),
             'hasil_deteksi': history_record.hasil_deteksi,
             'file_deteksi': history_record.file_deteksi  # ✅ Sudah ditambahkan
